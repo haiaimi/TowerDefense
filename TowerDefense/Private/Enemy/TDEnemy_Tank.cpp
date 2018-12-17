@@ -9,15 +9,18 @@
 #include <GameFramework/ProjectileMovementComponent.h>
 #include <Kismet/GameplayStatics.h>
 #include "Common/HAIAIMIHelper.h"
+#include "TDMap.h"
 
 
 
-ATDEnemy_Tank::ATDEnemy_Tank()
+ATDEnemy_Tank::ATDEnemy_Tank() :
+	TowerIndex(0),
+	TankPitch(0.f)
 {
 	TankBarrel = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TankBarrel"));
 	TankFire = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TankFire"));
 
-	if (TankFire&&TankBarrel)TankFire->SetupAttachment(TankBarrel);
+	if (TankFire && TankBarrel)TankFire->SetupAttachment(TankBarrel);
 }
 
 void ATDEnemy_Tank::BeginPlay()
@@ -43,12 +46,14 @@ void ATDEnemy_Tank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*FVector vec;
-	FRotator(vec);*/
-	//Fire();
-
-	/*GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Black, TankBarrel->GetComponentLocation().ToString());
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Black, GetActorLocation().ToString());*/
+	const FVector NearPoint = GetNearestPoint();
+	const FVector Dir = (NearPoint - TankBarrel->GetComponentLocation()).GetSafeNormal();
+	const FVector LDir = FRotationMatrix(TankBarrel->GetComponentRotation()).GetUnitAxis(EAxis::Z);
+	const float DotRes = FVector::DotProduct(Dir, LDir);
+	
+	//HAIAIMIHelper::Debug_ScreenMessage(FString::Printf(TEXT("CurPitch: %.4f, NextPitch: %.4f"), TankBarrel->GetComponentRotation().Pitch, TankBarrel->GetComponentRotation().Pitch + (DotRes > 0 ? 40.f : -40.f)*DeltaTime));
+	TankPitch += (DotRes > 0 ? 40.f : -40.f)*DeltaTime;
+	TankBarrel->SetWorldRotation(FRotator(HAIAIMIHelper::AdaptAngle(TankPitch), 0.f, 0.f));
 }
 
 void ATDEnemy_Tank::Fire()
@@ -58,9 +63,7 @@ void ATDEnemy_Tank::Fire()
 	ATDProjectile* SpawnedProjectile = GetWorld()->SpawnActorDeferred<ATDProjectile>(TankProjectile, SpawnTransform);
 	if (SpawnedProjectile)
 	{
-		SpawnedProjectile->ProjectileComponent->Velocity = TankBarrel->GetComponentRotation().Vector()*1000.f;
-		HAIAIMIHelper::Debug_ScreenMessage(SpawnedProjectile->ProjectileComponent->Velocity.ToString());
-		HAIAIMIHelper::Debug_ScreenMessage(SpawnTransform.Rotator().Vector().ToString());
+		SpawnedProjectile->ProjectileComponent->Velocity = TankBarrel->GetComponentRotation().Vector()*300.f;
 		UGameplayStatics::FinishSpawningActor(SpawnedProjectile, FTransform(FRotator::ZeroRotator, SpawnTransform.GetLocation()));
 	}
 
@@ -78,4 +81,27 @@ void ATDEnemy_Tank::FireLoop()
 	GetWorld()->GetTimerManager().SetTimer(FireInterval, this, &ATDEnemy_Tank::FireLoop, 2.f, false);
 
 	Fire();
+}
+
+FVector ATDEnemy_Tank::GetNearestPoint()
+{
+	FVector ResultPoint;
+	if (DestMap)
+	{
+		TArray<FVector>& Points = DestMap->BuildPoints;
+		if (TowerIndex + 1 >= Points.Num())
+			return Points[TowerIndex];
+		else
+		{
+			const float TankToCur = (Points[TowerIndex] - GetActorLocation()).Size();
+			const float TankToNext = (Points[TowerIndex + 1] - GetActorLocation()).Size();
+
+			if (TankToCur <= TankToNext)
+				return Points[TowerIndex];
+			else
+				return Points[++TowerIndex];
+		}
+	} 
+
+	return ResultPoint;
 }

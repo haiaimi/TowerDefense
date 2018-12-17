@@ -32,6 +32,10 @@ public:
 	/**开火间隙*/
 	FTimerHandle FireInterval;
 
+	int32 TowerIndex;
+
+	float TankPitch;
+
 public:
 	ATDEnemy_Tank();
 
@@ -46,4 +50,7 @@ public:
 
 	/**开火循环，2秒内发射一次*/
 	void FireLoop();
+
+	/**获取进的炮台位置*/
+	FVector GetNearestPoint();
 };

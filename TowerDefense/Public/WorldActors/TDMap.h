@@ -20,6 +20,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class ATDEnemy> Enemy_1;
+
+	/**可以建造的点*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (MakeEditWidget = true))
+	TArray<FVector> BuildPoints;
 	
 public:	
 	// Sets default values for this actor's properties

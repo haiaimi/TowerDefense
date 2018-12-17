@@ -27,7 +27,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* EnemyCollision;
 
-private:
+protected:
 	/** 目标地图*/
 	class ATDMap* DestMap;
 	
