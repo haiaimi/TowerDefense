@@ -8,6 +8,7 @@
 #include "Weapon/TDProjectile.h"
 #include <GameFramework/ProjectileMovementComponent.h>
 #include <Kismet/GameplayStatics.h>
+#include "Common/HAIAIMIHelper.h"
 
 
 
@@ -32,7 +33,7 @@ void ATDEnemy_Tank::PostInitializeComponents()
 
 	FTransform FireTransform = TankBarrel->GetSocketTransform(TEXT("FireSocket"));
 	TankBarrel->SetRelativeLocation(FVector(0.f, 10.f, 0.f));
-	TankFire->SetRelativeLocation(FireTransform.GetLocation() - TankBarrel->GetComponentLocation() + FVector(-10.f, 5.f, 0.f));
+	TankFire->SetRelativeLocation(FireTransform.GetLocation() - TankBarrel->GetComponentLocation() + FVector(-30.f, 5.f, 0.f));
 	TankFire->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 
 	TankFire->SetVisibility(false);
@@ -53,11 +54,14 @@ void ATDEnemy_Tank::Tick(float DeltaTime)
 void ATDEnemy_Tank::Fire()
 {
 	FTransform FireTransform = TankBarrel->GetSocketTransform(TEXT("FireSocket"));
-	ATDProjectile* SpawnedProjectile = GetWorld()->SpawnActorDeferred<ATDProjectile>(TankProjectile, FireTransform);
+	FTransform SpawnTransform = TankFire->GetSocketTransform(TEXT("BulletSocket"));
+	ATDProjectile* SpawnedProjectile = GetWorld()->SpawnActorDeferred<ATDProjectile>(TankProjectile, SpawnTransform);
 	if (SpawnedProjectile)
 	{
-		SpawnedProjectile->ProjectileComponent->Velocity = FireTransform.Rotator().Vector()*200.f;
-		UGameplayStatics::FinishSpawningActor(SpawnedProjectile, FireTransform);
+		SpawnedProjectile->ProjectileComponent->Velocity = TankBarrel->GetComponentRotation().Vector()*1000.f;
+		HAIAIMIHelper::Debug_ScreenMessage(SpawnedProjectile->ProjectileComponent->Velocity.ToString());
+		HAIAIMIHelper::Debug_ScreenMessage(SpawnTransform.Rotator().Vector().ToString());
+		UGameplayStatics::FinishSpawningActor(SpawnedProjectile, FTransform(FRotator::ZeroRotator, SpawnTransform.GetLocation()));
 	}
 
 	TankFire->SetVisibility(true);
@@ -66,7 +70,7 @@ void ATDEnemy_Tank::Fire()
 		TankFire->SetVisibility(false);
 		});
 
-	GetWorld()->GetTimerManager().SetTimer(FireTime, Delegate, 0.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(FireTime, Delegate, 0.1f, false);
 }
 
 void ATDEnemy_Tank::FireLoop()

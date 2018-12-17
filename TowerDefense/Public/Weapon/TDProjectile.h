@@ -17,9 +17,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	class UPaperSpriteComponent* ProjectileSprite;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* ProjectileCollision;
-
 
 	/**±¬Õ¨Sprite*/
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
@@ -33,10 +32,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void PostInitializeComponents()override;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
+	void OnImpact(const FHitResult& result);
 	
 };
