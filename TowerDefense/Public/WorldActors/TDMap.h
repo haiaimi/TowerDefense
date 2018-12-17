@@ -24,6 +24,10 @@ public:
 	/**可以建造的点*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (MakeEditWidget = true))
 	TArray<FVector> BuildPoints;
+
+	/**炮台地基*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<class ATDTowerBase> BaseTower;
 	
 public:	
 	// Sets default values for this actor's properties

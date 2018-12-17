@@ -29,4 +29,7 @@ public:
 	virtual void SetupInputComponent()override;
 
 	void SpawnEnemy();
+
+	/**点击事件检测地图*/
+	void DetectMap();
 };

@@ -46,7 +46,7 @@ void ATDEnemy_Tank::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	const FVector NearPoint = GetNearestPoint();
+	const FVector NearPoint = GetNearestTower();
 	const FVector Dir = (NearPoint - TankBarrel->GetComponentLocation()).GetSafeNormal();
 	const FVector LDir = FRotationMatrix(TankBarrel->GetComponentRotation()).GetUnitAxis(EAxis::Z);
 	const float DotRes = FVector::DotProduct(Dir, LDir);
@@ -63,7 +63,7 @@ void ATDEnemy_Tank::Fire()
 	ATDProjectile* SpawnedProjectile = GetWorld()->SpawnActorDeferred<ATDProjectile>(TankProjectile, SpawnTransform);
 	if (SpawnedProjectile)
 	{
-		SpawnedProjectile->ProjectileComponent->Velocity = TankBarrel->GetComponentRotation().Vector()*300.f;
+		SpawnedProjectile->Launch(TankBarrel->GetComponentRotation().Vector()*300.f);
 		UGameplayStatics::FinishSpawningActor(SpawnedProjectile, FTransform(FRotator::ZeroRotator, SpawnTransform.GetLocation()));
 	}
 
@@ -83,7 +83,7 @@ void ATDEnemy_Tank::FireLoop()
 	Fire();
 }
 
-FVector ATDEnemy_Tank::GetNearestPoint()
+FVector ATDEnemy_Tank::GetNearestTower()
 {
 	FVector ResultPoint;
 	if (DestMap)

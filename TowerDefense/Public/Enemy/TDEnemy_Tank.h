@@ -52,5 +52,5 @@ public:
 	void FireLoop();
 
 	/**获取进的炮台位置*/
-	FVector GetNearestPoint();
+	FVector GetNearestTower();
 };

@@ -12,6 +12,7 @@ class TOWERDEFENSE_API ATDProjectile : public AActor
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UProjectileMovementComponent* ProjectileComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
@@ -37,6 +38,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void OnImpact(const FHitResult& result);
+	/**×Óµ¯·¢Éä*/
+	virtual void Launch(FVector Veolcity);
+
+	virtual void OnImpact(const FHitResult& result);
 	
 };

@@ -5,6 +5,9 @@
 #include <EngineUtils.h>
 #include <ConstructorHelpers.h>
 #include <Engine/Engine.h>
+#include "Common/HAIAIMIHelper.h"
+#include "TDTowerBase.h"
+#include <Engine/LocalPlayer.h>
 
 
 ATDController::ATDController() :CurMap(nullptr)
@@ -18,6 +21,10 @@ void ATDController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FInputModeGameOnly InputMode;
+	SetInputMode(InputMode);
+	bShowMouseCursor = true;
+	GetLocalPlayer()->ViewportClient->SetCaptureMouseOnClick(EMouseCaptureMode::CaptureDuringMouseDown);
 	for (TActorIterator<ATDMap> Iter(GetWorld()); Iter; ++Iter)
 	{
 		CurMap = *Iter;
@@ -35,9 +42,24 @@ void ATDController::SetupInputComponent()
 	Super::SetupInputComponent() ;
 
 	InputComponent->BindAction("SpawnEnemy", IE_Pressed, this, &ATDController::SpawnEnemy);
+	InputComponent->BindAction("ClickMap", IE_Pressed, this, &ATDController::DetectMap);
 }
 
 void ATDController::SpawnEnemy()
 {
 	CurMap->SpawnEnemy();
+}
+
+void ATDController::DetectMap()
+{
+	FVector WorldLocation, Dir;
+	
+	FHitResult Result;
+	if (GetHitResultUnderCursor(ECollisionChannel::ECC_WorldDynamic, true, Result))
+	{
+		if (ATDTowerBase* TowerBase = Cast<ATDTowerBase>(Result.GetActor()))
+		{
+			HAIAIMIHelper::Debug_ScreenMessage(TEXT("Hit Screen"));
+		}
+	}
 }

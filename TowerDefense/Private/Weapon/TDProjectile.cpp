@@ -26,7 +26,7 @@ ATDProjectile::ATDProjectile()
 	ProjectileComponent->UpdatedComponent = ProjectileSprite;
 	ProjectileComponent->InitialSpeed = 300.f;
 	ProjectileComponent->MaxSpeed = 300.f;
-	ProjectileComponent->ProjectileGravityScale = 0.5f;
+	ProjectileComponent->ProjectileGravityScale = 0.f;
 	RootComponent = ProjectileSprite;
 	ProjectileCollision->SetupAttachment(RootComponent);
 }
@@ -45,6 +45,7 @@ void ATDProjectile::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	FBoxSphereBounds Bounds = ProjectileSprite->CalcBounds(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
+	Bounds.BoxExtent.Y += 50.f;
 	ProjectileCollision->SetBoxExtent(Bounds.BoxExtent);
 
 	ProjectileComponent->OnProjectileStop.AddDynamic(this, &ATDProjectile::OnImpact);
@@ -59,8 +60,11 @@ void ATDProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//HAIAIMIHelper::Debug_ScreenMessage(ProjectileCollision->GetComponentLocation().ToString());
-	//HAIAIMIHelper::Debug_ScreenMessage(ProjectileSprite->GetComponentLocation().ToString());
+}
+
+void ATDProjectile::Launch(FVector Veolcity)
+{
+	ProjectileComponent->Velocity = Veolcity;
 }
 
 void ATDProjectile::OnImpact(const FHitResult& result)

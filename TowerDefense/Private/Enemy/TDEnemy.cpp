@@ -29,6 +29,7 @@ void ATDEnemy::BeginPlay()
 	Super::BeginPlay();
 	
 	FBoxSphereBounds Bounds = EnemySprite->CalcBounds(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
+	Bounds.BoxExtent.Y += 50.f;
 	EnemyCollision->SetBoxExtent(Bounds.BoxExtent);
 }
 

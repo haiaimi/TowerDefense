@@ -5,6 +5,7 @@
 #include <Components/SplineComponent.h>
 #include "TDEnemy.h"
 #include <Engine/Engine.h>
+#include "TDTowerBase.h"
 
 
 // Sets default values
@@ -22,6 +23,10 @@ void ATDMap::BeginPlay()
 {
 	Super::BeginPlay();
 
+	for (auto& iter : BuildPoints)
+	{
+		GetWorld()->SpawnActor<ATDTowerBase>(BaseTower, FTransform(FRotator::ZeroRotator, iter + FVector(0.f, 10.f, 0.f)));
+	}
 }
 
 // Called every frame
