@@ -16,6 +16,8 @@ ATDMap::ATDMap()
 
 	Map = CreateDefaultSubobject<UPaperTileMapComponent>(TEXT("Map"));
 	RouteLine = CreateDefaultSubobject<USplineComponent>(TEXT("RouteLine"));
+
+	Map->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned

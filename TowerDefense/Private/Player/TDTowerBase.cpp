@@ -7,7 +7,8 @@
 
 
 // Sets default values
-ATDTowerBase::ATDTowerBase()
+ATDTowerBase::ATDTowerBase() :
+	TowerType(ETowerType::EBase)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -19,6 +20,7 @@ ATDTowerBase::ATDTowerBase()
 	TowerCollision->SetupAttachment(TowerSprite);
 
 	TowerSprite->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TowerSprite->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	TowerCollision->SetCollisionObjectType(COLLISION_TOWERBASE);
 	TowerCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	TowerCollision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECollisionResponse::ECR_Block);
@@ -30,7 +32,7 @@ void ATDTowerBase::BeginPlay()
 	Super::BeginPlay();
 	
 	FBoxSphereBounds Bounds = TowerSprite->CalcBounds(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
-	Bounds.BoxExtent.Y += 50.f;
+	Bounds.BoxExtent.Y += 200.f;
 	TowerCollision->SetBoxExtent(Bounds.BoxExtent);
 }
 

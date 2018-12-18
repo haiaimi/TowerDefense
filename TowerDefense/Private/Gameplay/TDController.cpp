@@ -13,8 +13,11 @@
 ATDController::ATDController() :CurMap(nullptr)
 {
 	static ConstructorHelpers::FClassFinder<ATDMap> DefaultMapFinder(TEXT("/Game/Blueprint/maps/map1"));
+	static ConstructorHelpers::FClassFinder<ATDTowerBase> TowerFinder(TEXT("/Game/Blueprint/Weapon/Tower2Missle"));
 	if (DefaultMapFinder.Succeeded())
 		DefaultMap = DefaultMapFinder.Class;
+	if (TowerFinder.Succeeded())
+		Tower1 = TowerFinder.Class;
 }
 
 void ATDController::BeginPlay()
@@ -57,8 +60,11 @@ void ATDController::DetectMap()
 	FHitResult Result;
 	if (GetHitResultUnderCursor(ECollisionChannel::ECC_WorldDynamic, true, Result))
 	{
-		if (ATDTowerBase* TowerBase = Cast<ATDTowerBase>(Result.GetActor()))
+		ATDTowerBase* TowerBase = Cast<ATDTowerBase>(Result.GetActor());
+		if (TowerBase && TowerBase->TowerType == ETowerType::EBase)
 		{
+			GetWorld()->SpawnActor<ATDTowerBase>(Tower1, TowerBase->GetTransform());
+			TowerBase->Destroy();
 			HAIAIMIHelper::Debug_ScreenMessage(TEXT("Hit Screen"));
 		}
 	}

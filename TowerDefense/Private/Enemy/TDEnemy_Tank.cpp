@@ -20,6 +20,9 @@ ATDEnemy_Tank::ATDEnemy_Tank() :
 	TankBarrel = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TankBarrel"));
 	TankFire = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TankFire"));
 
+	TankFire->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TankBarrel->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	TankBarrel->SetupAttachment(RootComponent);
 	if (TankFire && TankBarrel)TankFire->SetupAttachment(TankBarrel);
 }
 
@@ -34,9 +37,8 @@ void ATDEnemy_Tank::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	FTransform FireTransform = TankBarrel->GetSocketTransform(TEXT("FireSocket"));
 	TankBarrel->SetRelativeLocation(FVector(0.f, 10.f, 0.f));
-	TankFire->SetRelativeLocation(FireTransform.GetLocation() - TankBarrel->GetComponentLocation() + FVector(-30.f, 5.f, 0.f));
+	TankFire->SetRelativeLocation(FVector(35.f, 5.f, 3.f));
 	TankFire->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
 
 	TankFire->SetVisibility(false);
@@ -60,7 +62,7 @@ void ATDEnemy_Tank::Fire()
 {
 	FTransform FireTransform = TankBarrel->GetSocketTransform(TEXT("FireSocket"));
 	FTransform SpawnTransform = TankFire->GetSocketTransform(TEXT("BulletSocket"));
-	ATDProjectile* SpawnedProjectile = GetWorld()->SpawnActorDeferred<ATDProjectile>(TankProjectile, SpawnTransform);
+	ATDProjectile* SpawnedProjectile = GetWorld()->SpawnActorDeferred<ATDProjectile>(TankProjectile, SpawnTransform, this);
 	if (SpawnedProjectile)
 	{
 		SpawnedProjectile->Launch(TankBarrel->GetComponentRotation().Vector()*300.f);

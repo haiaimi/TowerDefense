@@ -30,7 +30,7 @@ public:
 	float TowerBarrelPitch;
 
 	/**¿ª»ð¶¨Ê±Æ÷*/
-	FTimerHandle FireTimer;
+	FTimerHandle ReloadTimer;
 
 public:
 	ATDTower2Missle();
@@ -46,5 +46,5 @@ public:
 
 	void Fire();
 
-	FVector GetNearestEnemy();
+	FTransform GetNearestEnemy();
 };

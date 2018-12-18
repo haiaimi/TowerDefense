@@ -8,6 +8,7 @@
 #include <PaperSpriteComponent.h>
 #include <Engine/Engine.h>
 #include <Components/BoxComponent.h>
+#include "TDTypes.h"
 
 
 // Sets default values
@@ -20,7 +21,13 @@ ATDEnemy::ATDEnemy():
 	EnemySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("EnemySprite"));
 	EnemyCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("EnemyCollision"));
 	RootComponent = EnemySprite;
+	EnemySprite->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	EnemySprite->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	EnemyCollision->SetupAttachment(EnemySprite);
+	EnemyCollision->SetCollisionObjectType(COLLISION_ENEMY);
+	EnemyCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	//EnemyCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	EnemyCollision->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Block);
 }
 
 // Called when the game starts or when spawned
@@ -29,7 +36,7 @@ void ATDEnemy::BeginPlay()
 	Super::BeginPlay();
 	
 	FBoxSphereBounds Bounds = EnemySprite->CalcBounds(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
-	Bounds.BoxExtent.Y += 50.f;
+	Bounds.BoxExtent.Y += 200.f;
 	EnemyCollision->SetBoxExtent(Bounds.BoxExtent);
 }
 

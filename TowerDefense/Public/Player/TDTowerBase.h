@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TDTypes.h"
 #include "TDTowerBase.generated.h"
 
 UCLASS()
@@ -17,6 +18,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* TowerCollision;
+
+	ETowerType::Type TowerType;
 
 public:	
 	// Sets default values for this actor's properties

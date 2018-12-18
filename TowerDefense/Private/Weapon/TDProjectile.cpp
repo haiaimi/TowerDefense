@@ -5,6 +5,7 @@
 #include <PaperSpriteComponent.h>
 #include <Components/BoxComponent.h>
 #include "Common/HAIAIMIHelper.h"
+#include "TDTypes.h"
 
 
 // Sets default values
@@ -18,17 +19,21 @@ ATDProjectile::ATDProjectile()
 	ProjectileSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ProjectileSprite"));
 	BoomSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("BoomSprite"));
 
-	ProjectileSprite->SetSimulatePhysics(true);
-	ProjectileSprite->SetEnableGravity(false);
-	ProjectileSprite->SetConstraintMode(EDOFMode::XZPlane);
-	ProjectileCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ProjectileSprite->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ProjectileSprite->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	ProjectileComponent->UpdatedComponent = ProjectileSprite;
+	ProjectileCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ProjectileCollision->SetCollisionObjectType(COLLISION_ENEMYBULLET);
+	ProjectileCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_ENEMY, ECollisionResponse::ECR_Ignore);
+	
+	ProjectileComponent->bShouldBounce = false;
+	ProjectileComponent->UpdatedComponent = ProjectileCollision;
 	ProjectileComponent->InitialSpeed = 300.f;
 	ProjectileComponent->MaxSpeed = 300.f;
+	ProjectileComponent->Velocity = FVector(1.f, 0.f, 0.f);
 	ProjectileComponent->ProjectileGravityScale = 0.f;
-	RootComponent = ProjectileSprite;
-	ProjectileCollision->SetupAttachment(RootComponent);
+	RootComponent = ProjectileCollision;
+	ProjectileSprite->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -36,23 +41,19 @@ void ATDProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ProjectileCollision->SetRelativeLocation(FVector::ZeroVector);
-	//ProjectileComponent->Velocity = FVector(0.f, 0.f, 400.f);
+	ProjectileSprite->SetRelativeLocation(FVector::ZeroVector);
+	FBoxSphereBounds Bounds = ProjectileSprite->CalcBounds(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
+	Bounds.BoxExtent.Y += 200.f;
+	ProjectileCollision->SetBoxExtent(Bounds.BoxExtent);
 }
 
 void ATDProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	FBoxSphereBounds Bounds = ProjectileSprite->CalcBounds(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
-	Bounds.BoxExtent.Y += 50.f;
-	ProjectileCollision->SetBoxExtent(Bounds.BoxExtent);
-
 	ProjectileComponent->OnProjectileStop.AddDynamic(this, &ATDProjectile::OnImpact);
-
-	//RootComponent = ProjectileCollision;
-	//ProjectileSprite->SetupAttachment(RootComponent);
-	//ProjectileCollision->SetRelativeLocation(FVector::ZeroVector);
+	if (GetOwner())
+		ProjectileCollision->MoveIgnoreActors.Add(GetOwner());
 }
 
 // Called every frame
@@ -60,6 +61,7 @@ void ATDProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	HAIAIMIHelper::Debug_ScreenMessage(FString::SanitizeFloat(ProjectileComponent->Velocity.Size()));
 }
 
 void ATDProjectile::Launch(FVector Veolcity)
@@ -69,8 +71,14 @@ void ATDProjectile::Launch(FVector Veolcity)
 
 void ATDProjectile::OnImpact(const FHitResult& result)
 {
-	HAIAIMIHelper::Debug_ScreenMessage(TEXT("Stop Stop Stop"));
-	
+	//±¬Õ¨Ð§¹û
+	FVector ImpactPoint = result.ImpactPoint;
+
 	Destroy();
+}
+
+void ATDProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
 }
 
