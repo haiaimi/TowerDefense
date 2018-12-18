@@ -24,6 +24,7 @@ ATDEnemy_Tank::ATDEnemy_Tank() :
 	TankBarrel->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TankBarrel->SetupAttachment(RootComponent);
 	if (TankFire && TankBarrel)TankFire->SetupAttachment(TankBarrel);
+	CurType = EEnemyType::ETank;
 }
 
 void ATDEnemy_Tank::BeginPlay()

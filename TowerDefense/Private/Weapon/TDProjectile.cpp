@@ -24,6 +24,7 @@ ATDProjectile::ATDProjectile()
 	ProjectileCollision->SetCollisionObjectType(COLLISION_ENEMYBULLET);
 	ProjectileCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_ENEMY, ECollisionResponse::ECR_Ignore);
+	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_ENEMYBULLET, ECollisionResponse::ECR_Ignore);
 	
 	ProjectileComponent->bShouldBounce = false;
 	ProjectileComponent->UpdatedComponent = ProjectileCollision;

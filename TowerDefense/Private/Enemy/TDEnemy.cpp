@@ -15,7 +15,9 @@
 ATDEnemy::ATDEnemy(): 
 	DestMap(nullptr),
 	Speed(50.f),
-	Distance(0.f)
+	Distance(0.f),
+	CurType(EEnemyType::EBot),     //默认是机器人类型
+	MoveOffset(0.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	EnemySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("EnemySprite"));
@@ -38,6 +40,9 @@ void ATDEnemy::BeginPlay()
 	FBoxSphereBounds Bounds = EnemySprite->CalcBounds(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
 	Bounds.BoxExtent.Y += 200.f;
 	EnemyCollision->SetBoxExtent(Bounds.BoxExtent);
+
+	if (CurType == EEnemyType::EBot)
+		MoveOffset = FMath::Rand() % 100 - 50;
 }
 
 // Called every frame
@@ -49,10 +54,10 @@ void ATDEnemy::Tick(float DeltaTime)
 	if (DestMap)
 	{
 		USplineComponent* Spline = DestMap->RouteLine;    //获取地图得路线
-		//初始化敌人得位置
+		//初始化敌人的位置
 		FTransform NewPoint = Spline->GetTransformAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
-		SetActorLocationAndRotation(NewPoint.GetLocation(), NewPoint.GetRotation());
-		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Black, TEXT("Update Pos"));
+		const FVector rightDir = FRotationMatrix(NewPoint.Rotator()).GetUnitAxis(EAxis::Z);
+		SetActorLocationAndRotation(NewPoint.GetLocation() + rightDir * MoveOffset, NewPoint.GetRotation());
 	}
 	else
 	{

@@ -8,6 +8,7 @@
 #include "ExplosionEffect.h"
 #include <Engine/World.h>
 #include "Common/HAIAIMIHelper.h"
+#include "TDEnemy.h"
 
 
 AMissle::AMissle()
@@ -22,6 +23,8 @@ AMissle::AMissle()
 	ProjectileCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_TOWER, ECollisionResponse::ECR_Ignore);
 	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_EXPLOSION, ECollisionResponse::ECR_Ignore);
+	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Ignore);
+	ProjectileSprite->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Ignore);
 }
 
 void AMissle::PostInitializeComponents()
@@ -35,6 +38,7 @@ void AMissle::BeginPlay()
 
 	BulletFire->AttachToComponent(ProjectileSprite, FAttachmentTransformRules::KeepRelativeTransform, TEXT("FireSocket"));
 	BulletFire->SetRelativeRotation(FRotator(180.f, 0.f, 0.f));
+
 }
 
 void AMissle::Launch(FVector Veolcity)
@@ -48,13 +52,24 @@ void AMissle::Launch(FVector Veolcity)
 
 void AMissle::OnImpact(const FHitResult& result)
 {
-	FVector ImpatcPoint = result.ImpactPoint;
-	ImpatcPoint.Y = 10.f;
+	FVector ImpactPoint = result.ImpactPoint;
+	ImpactPoint.Y = 10.f;
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.Owner = GetOwner();
-	AExplosionEffect* Tmp = GetWorld()->SpawnActor<class AExplosionEffect>(ExplosionEffect, FTransform(FRotator::ZeroRotator, result.ImpactPoint + FVector(0.f, 20.f, 0.f)), SpawnParameters);
+	AExplosionEffect* Tmp = GetWorld()->SpawnActor<class AExplosionEffect>(ExplosionEffect, FTransform(FRotator::ZeroRotator, ImpactPoint + FVector(0.f, 50.f, 0.f)), SpawnParameters);
 
-	HAIAIMIHelper::Debug_ScreenMessage(TEXT("Have Spawned Explosion Effect"));
+	TArray<FHitResult> Result;
+	GetWorld()->SweepMultiByObjectType(Result, ImpactPoint, ImpactPoint + FVector(0.f, 100.f, 0.f), 
+									  FQuat::Identity, 
+									  FCollisionObjectQueryParams(COLLISION_ENEMY),      //检测得对象类型
+									  FCollisionShape::MakeSphere(40.f));  //半径25得检测范围
+	for (auto iter = Result.CreateIterator(); iter; ++iter)
+	{
+		if (ATDEnemy* Enemy = Cast<ATDEnemy>((*iter).GetActor()))
+		{
+			HAIAIMIHelper::Debug_ScreenMessage(Enemy->GetName());
+		}
+	}
 
 	Destroy();
 }

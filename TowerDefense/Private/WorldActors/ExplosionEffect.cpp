@@ -17,6 +17,7 @@ AExplosionEffect::AExplosionEffect():
 
 	BoomSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("BoomSprite"));
 	BoomSprite->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BoomSprite->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	BoomSprite->SetCollisionObjectType(COLLISION_EXPLOSION);
 }
 

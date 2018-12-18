@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TDTypes.h"
 #include "TDEnemy.generated.h"
 
 UCLASS()
@@ -27,10 +28,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* EnemyCollision;
 
+	EEnemyType::Type CurType;
+
 protected:
 	/** 目标地图*/
 	class ATDMap* DestMap;
 	
+	/**前进偏移量*/
+	float MoveOffset;
 public:	
 	// Sets default values for this actor's properties
 	ATDEnemy();

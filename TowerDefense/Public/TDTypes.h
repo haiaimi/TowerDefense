@@ -21,3 +21,13 @@ namespace ETowerType
 		ETower2Missle,
 	};
 }
+
+UENUM(BlueprintType)
+namespace EEnemyType
+{
+	enum Type
+	{
+		EBot,
+		ETank,
+	};
+}
