@@ -5,6 +5,9 @@
 #include <GameFramework/ProjectileMovementComponent.h>
 #include <Components/BoxComponent.h>
 #include "TDTypes.h"
+#include "ExplosionEffect.h"
+#include <Engine/World.h>
+#include "Common/HAIAIMIHelper.h"
 
 
 AMissle::AMissle()
@@ -18,6 +21,7 @@ AMissle::AMissle()
 	ProjectileCollision->SetCollisionObjectType(COLLISION_MISSLE);
 	ProjectileCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_TOWER, ECollisionResponse::ECR_Ignore);
+	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_EXPLOSION, ECollisionResponse::ECR_Ignore);
 }
 
 void AMissle::PostInitializeComponents()
@@ -44,7 +48,13 @@ void AMissle::Launch(FVector Veolcity)
 
 void AMissle::OnImpact(const FHitResult& result)
 {
-	Super::OnImpact(result);
+	FVector ImpatcPoint = result.ImpactPoint;
+	ImpatcPoint.Y = 10.f;
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = GetOwner();
+	AExplosionEffect* Tmp = GetWorld()->SpawnActor<class AExplosionEffect>(ExplosionEffect, FTransform(FRotator::ZeroRotator, result.ImpactPoint + FVector(0.f, 20.f, 0.f)), SpawnParameters);
+
+	HAIAIMIHelper::Debug_ScreenMessage(TEXT("Have Spawned Explosion Effect"));
 
 	Destroy();
 }

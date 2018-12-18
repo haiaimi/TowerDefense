@@ -21,9 +21,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* ProjectileCollision;
 
-	/**±¬Õ¨Sprite*/
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-	class UPaperSpriteComponent* BoomSprite;
+	/**±¬Õ¨Ð§¹û*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<class AExplosionEffect> ExplosionEffect;
 	
 public:	
 	// Sets default values for this actor's properties

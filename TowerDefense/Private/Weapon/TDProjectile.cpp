@@ -17,7 +17,6 @@ ATDProjectile::ATDProjectile()
 	ProjectileComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComponent"));
 	ProjectileCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("ProjectileCollision"));
 	ProjectileSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("ProjectileSprite"));
-	BoomSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("BoomSprite"));
 
 	ProjectileSprite->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ProjectileSprite->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
@@ -60,8 +59,6 @@ void ATDProjectile::PostInitializeComponents()
 void ATDProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	HAIAIMIHelper::Debug_ScreenMessage(FString::SanitizeFloat(ProjectileComponent->Velocity.Size()));
 }
 
 void ATDProjectile::Launch(FVector Veolcity)
@@ -73,7 +70,7 @@ void ATDProjectile::OnImpact(const FHitResult& result)
 {
 	//±¬Õ¨Ð§¹û
 	FVector ImpactPoint = result.ImpactPoint;
-
+	
 	Destroy();
 }
 
