@@ -23,6 +23,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
 	float Health;
 
+	/**·ÀÓùËþ±¬Õ¨Ð§¹û*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<class AExplosionEffect> TowerExpolsionEffect;
+
 	ETowerType::Type TowerType;
 
 public:	

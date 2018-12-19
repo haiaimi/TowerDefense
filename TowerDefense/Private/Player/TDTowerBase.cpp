@@ -7,6 +7,7 @@
 #include <ConstructorHelpers.h>
 #include <PaperSprite.h>
 #include <Engine/World.h>
+#include "ExplosionEffect.h"
 
 
 // Sets default values
@@ -57,6 +58,9 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	if (Health < 0)
 	{
 		GetWorld()->SpawnActor<ATDTowerBase>(GetActorLocation(), GetActorRotation()); 
+		FTransform ExplosionTransform = GetActorTransform();
+		ExplosionTransform.SetScale3D(FVector(2.f, 2.f, 2.f));
+		if (TowerExpolsionEffect)GetWorld()->SpawnActor<AExplosionEffect>(TowerExpolsionEffect, ExplosionTransform);
 		Destroy();
 	}
 
