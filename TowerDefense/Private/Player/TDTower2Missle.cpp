@@ -9,6 +9,8 @@
 #include "Common/HAIAIMIHelper.h"
 #include <TimerManager.h>
 #include <Components/BoxComponent.h>
+#include <GameFramework/ProjectileMovementComponent.h>
+#include <Components/SceneComponent.h>
 
 
 ATDTower2Missle::ATDTower2Missle() :
@@ -114,4 +116,20 @@ FTransform ATDTower2Missle::GetNearestEnemy()
 	}
 
 	return Res;
+}
+
+void ATDTower2Missle::Destroyed()
+{
+	TArray<USceneComponent*> AllChildren;
+	AllChildren = TowerBarrel->GetAttachChildren();
+
+	for (auto iter = AllChildren.CreateConstIterator(); iter; ++iter)
+	{
+		if (AMissle* missle = Cast<AMissle>((*iter)->GetOwner()))
+		{
+			missle->Destroy();
+		}
+	}
+
+	Super::Destroyed();
 }

@@ -28,6 +28,17 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* EnemyCollision;
 
+	/**生命值*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
+	float Health;
+
+	/**敌人死亡效果*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class TSubclassOf<class AExplosionEffect> DeathTrace;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FVector TraceScale;
+
 	EEnemyType::Type CurType;
 
 protected:
@@ -48,5 +59,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 };

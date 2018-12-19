@@ -23,7 +23,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UPaperSpriteComponent* TankFire;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,Category="Weapon")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Weapon")
 	TSubclassOf<class ATDProjectile> TankProjectile;
 
 	/**火焰持续时间*/

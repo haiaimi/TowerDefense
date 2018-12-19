@@ -24,6 +24,10 @@ public:
 	/**±¬Õ¨Ð§¹û*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class AExplosionEffect> ExplosionEffect;
+
+	/**×Óµ¯ÉËº¦*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Damage;
 	
 public:	
 	// Sets default values for this actor's properties

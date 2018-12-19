@@ -25,6 +25,8 @@ AMissle::AMissle()
 	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_EXPLOSION, ECollisionResponse::ECR_Ignore);
 	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Ignore);
 	ProjectileSprite->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Ignore);
+
+	Damage = 100.f;
 }
 
 void AMissle::PostInitializeComponents()
@@ -67,7 +69,8 @@ void AMissle::OnImpact(const FHitResult& result)
 	{
 		if (ATDEnemy* Enemy = Cast<ATDEnemy>((*iter).GetActor()))
 		{
-			HAIAIMIHelper::Debug_ScreenMessage(Enemy->GetName());
+			//对敌人附加伤害
+			Enemy->TakeDamage(Damage, FDamageEvent(), NULL, NULL);
 		}
 	}
 

@@ -4,17 +4,25 @@
 #include <Components/BoxComponent.h>
 #include <PaperSpriteComponent.h>
 #include "TDTypes.h"
+#include <ConstructorHelpers.h>
+#include <PaperSprite.h>
+#include <Engine/World.h>
 
 
 // Sets default values
 ATDTowerBase::ATDTowerBase() :
+	Health(200.f),
 	TowerType(ETowerType::EBase)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	static ConstructorHelpers::FObjectFinder<UPaperSprite> SpriteFinder(TEXT("/Game/Weapon/Sprite/towerDefense_tile018_Sprite"));
+
 	TowerCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("TowerCollision"));
 	TowerSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TowerSprite"));
+
+	if (SpriteFinder.Succeeded())TowerSprite->SetSprite(SpriteFinder.Object);
 
 	RootComponent = TowerSprite;
 	TowerCollision->SetupAttachment(TowerSprite);
@@ -40,6 +48,18 @@ void ATDTowerBase::BeginPlay()
 void ATDTowerBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
 
+float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	Health -= DamageAmount;
+
+	if (Health < 0)
+	{
+		GetWorld()->SpawnActor<ATDTowerBase>(GetActorLocation(), GetActorRotation()); 
+		Destroy();
+	}
+
+	return 0.f;
 }
 

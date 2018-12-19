@@ -47,4 +47,6 @@ public:
 	void Fire();
 
 	FTransform GetNearestEnemy();
+
+	virtual void Destroyed()override;
 };

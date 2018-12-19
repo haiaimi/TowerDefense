@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TDProjectile.h"
 #include <GameFramework/ProjectileMovementComponent.h>
@@ -6,10 +6,12 @@
 #include <Components/BoxComponent.h>
 #include "Common/HAIAIMIHelper.h"
 #include "TDTypes.h"
+#include "TDTowerBase.h"
 
 
 // Sets default values
-ATDProjectile::ATDProjectile()
+ATDProjectile::ATDProjectile():
+	Damage(30.f)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -32,6 +34,7 @@ ATDProjectile::ATDProjectile()
 	ProjectileComponent->MaxSpeed = 300.f;
 	ProjectileComponent->Velocity = FVector(1.f, 0.f, 0.f);
 	ProjectileComponent->ProjectileGravityScale = 0.f;
+	
 	RootComponent = ProjectileCollision;
 	ProjectileSprite->SetupAttachment(RootComponent);
 }
@@ -41,6 +44,7 @@ void ATDProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetLifeSpan(10.f);  //设置子弹的声明周期
 	ProjectileSprite->SetRelativeLocation(FVector::ZeroVector);
 	FBoxSphereBounds Bounds = ProjectileSprite->CalcBounds(FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
 	Bounds.BoxExtent.Y += 200.f;
@@ -69,8 +73,13 @@ void ATDProjectile::Launch(FVector Veolcity)
 
 void ATDProjectile::OnImpact(const FHitResult& result)
 {
-	//��ըЧ��
+	//爆炸效果
 	FVector ImpactPoint = result.ImpactPoint;
+
+	if (ATDTowerBase* Tower = Cast<ATDTowerBase>(result.GetActor()))
+	{
+		Tower->TakeDamage(Damage, FDamageEvent(), NULL, NULL);
+	}
 	
 	Destroy();
 }

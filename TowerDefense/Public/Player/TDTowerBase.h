@@ -19,6 +19,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* TowerCollision;
 
+	/**ÉúÃüÖµ*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
+	float Health;
+
 	ETowerType::Type TowerType;
 
 public:	
@@ -33,4 +37,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 };

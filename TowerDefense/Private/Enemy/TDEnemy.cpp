@@ -9,15 +9,18 @@
 #include <Engine/Engine.h>
 #include <Components/BoxComponent.h>
 #include "TDTypes.h"
+#include "ExplosionEffect.h"
 
 
 // Sets default values
-ATDEnemy::ATDEnemy(): 
+ATDEnemy::ATDEnemy() :
 	DestMap(nullptr),
 	Speed(50.f),
 	Distance(0.f),
 	CurType(EEnemyType::EBot),     //默认是机器人类型
-	MoveOffset(0.f)
+	MoveOffset(0.f),
+	Health(100.f),
+	TraceScale(FVector(0.6f, 0.6f, 0.6f))
 {
 	PrimaryActorTick.bCanEverTick = true;
 	EnemySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("EnemySprite"));
@@ -66,5 +69,21 @@ void ATDEnemy::Tick(float DeltaTime)
 	}
 
 	Distance += Speed * DeltaTime;
+}
+
+float ATDEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	Health -= DamageAmount;
+
+	if (Health < 0)
+	{
+		FTransform TraceTransform = GetActorTransform();
+		TraceTransform.SetScale3D(TraceScale);
+		TraceTransform.SetRotation(FQuat(FRotator(FMath::Rand() % 360, 0.f, 0.f)));
+		GetWorld()->SpawnActor<AExplosionEffect>(DeathTrace, TraceTransform);
+		Destroy();
+	}
+
+	return 0;
 }
 
