@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -21,6 +21,8 @@ public:
 
 	void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)override;
 
+	void SetupAnimation();
+
 private:
 	const struct FNumberSlateStyle* NumberStyle;
 
@@ -33,4 +35,12 @@ private:
 	TArray<SImage*> DownImages;
 
 	TSharedPtr<SImage> TempImage;
+
+	FCurveSequence AnimSequence;
+
+	FCurveHandle ScrollAnim;
+
+	TArray<int32> UpNumbers;
+
+	TArray<int32> DownNumbers;
 };
