@@ -8,6 +8,8 @@
 #include "Common/HAIAIMIHelper.h"
 #include "TDTowerBase.h"
 #include <Engine/LocalPlayer.h>
+#include "UI/TDHUD.h"
+#include "../UI/Widgets/SScoreWidget.h"
 
 
 ATDController::ATDController() :CurMap(nullptr)
@@ -67,5 +69,15 @@ void ATDController::DetectMap()
 			TowerBase->Destroy();
 			HAIAIMIHelper::Debug_ScreenMessage(TEXT("Hit Screen"));
 		}
+	}
+}
+
+void ATDController::AddScore(int32 AddedScore)
+{
+	if (ATDHUD* CurHUD = Cast<ATDHUD>(GetHUD()))
+	{
+		TSharedPtr<class SScoreWidget> ScoreWidget = CurHUD->GetScoreWidget();
+		if (ScoreWidget.IsValid())
+			ScoreWidget->AddScore(AddedScore);
 	}
 }

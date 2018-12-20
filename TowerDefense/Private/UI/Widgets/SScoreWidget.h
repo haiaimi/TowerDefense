@@ -23,18 +23,26 @@ public:
 
 	void SetupAnimation();
 
+	FORCEINLINE int32 GetSpecifiedNumber(int32 Index)
+	{
+		int32 Res = (DestScore / (FMath::Pow(10, 4 - Index)));
+		return Res % 10;
+	}
+
+	void AddScore(int32 AddedScore);
+
 private:
+	/**面板当前显示的分数*/
+	int32 CurSocre;
+
+	/**目标分数*/
+	int32 DestScore;
+
 	const struct FNumberSlateStyle* NumberStyle;
 
 	TSharedPtr<SHorizontalBox> ScoreNumsUp;
 
 	TSharedPtr<SHorizontalBox> ScoreNumsDown;
-
-	TArray<SImage*> UpImages;
-
-	TArray<SImage*> DownImages;
-
-	TSharedPtr<SImage> TempImage;
 
 	FCurveSequence AnimSequence;
 

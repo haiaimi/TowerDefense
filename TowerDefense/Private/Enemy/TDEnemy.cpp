@@ -20,6 +20,7 @@ ATDEnemy::ATDEnemy() :
 	CurType(EEnemyType::EBot),     //默认是机器人类型
 	MoveOffset(0.f),
 	Health(100.f),
+	Bonus(100.f),
 	TraceScale(FVector(0.6f, 0.6f, 0.6f))
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -81,9 +82,11 @@ float ATDEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		TraceTransform.SetScale3D(TraceScale);
 		TraceTransform.SetRotation(FQuat(FRotator(FMath::Rand() % 360, 0.f, 0.f)));
 		GetWorld()->SpawnActor<AExplosionEffect>(DeathTrace, TraceTransform);
+		if (ATDController* CurController = Cast<ATDController>(GetWorld()->GetFirstPlayerController()))
+			CurController->AddScore(Bonus);
 		Destroy();
 	}
 
-	return 0;
+	return 0.f;
 }
 

@@ -34,4 +34,6 @@ public:
 
 	/**点击事件检测地图*/
 	void DetectMap();
+
+	void AddScore(int32 AddedScore);
 };

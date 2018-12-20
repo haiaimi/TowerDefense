@@ -29,8 +29,12 @@ public:
 	class UBoxComponent* EnemyCollision;
 
 	/**生命值*/
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float Health;
+
+	/**击杀奖励金*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 Bonus;
 
 	/**敌人死亡效果*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

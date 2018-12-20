@@ -21,6 +21,11 @@ public:
 
 	virtual void BeginPlay()override;
 
+	TSharedPtr<class SScoreWidget> GetScoreWidget()
+	{
+		return ScoreWidget;
+	}
+
 private:
 	TSharedPtr<class SScoreWidget> ScoreWidget;
 };

@@ -10,8 +10,8 @@
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SScoreWidget::Construct(const FArguments& InArgs)
 {
-	UpImages.SetNum(5);
-	DownImages.SetNum(5);
+	CurSocre = 0;
+	DestScore = 65845;
 	UpNumbers.Init(0, 5);
 	DownNumbers.Init(1, 5);
 	NumberStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FNumberSlateStyle>(TEXT("NumberStyle"));
@@ -58,7 +58,7 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 					.WidthOverride(50)
 					.HeightOverride(50)
 					[
-						SAssignNew(TempImage, SImage)
+						SNew(SImage)
 						.Image(&NumberStyle->MoneyCoin)
 						.RenderTransform(FSlateRenderTransform(1.8f))
 					]
@@ -125,13 +125,15 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 
 void SScoreWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
+	if (CurSocre == DestScore)return;      //分数相同就直接跳过下面的步骤
 	FChildren* ChildrenUp = ScoreNumsUp->GetChildren();
 	FChildren* ChildrenDown = ScoreNumsDown->GetChildren();
 	const float CurLerp = ScrollAnim.GetLerp();
 
 	for (int32 i = 0; i < 5; ++i)
 	{
-		if (UpNumbers[i] == 9)continue;
+		if (UpNumbers[i] == GetSpecifiedNumber(i))continue;
+
 		TPanelChildren<SBoxPanel::FSlot>* PanelChildrenUp = (TPanelChildren<SBoxPanel::FSlot>*)ChildrenUp;
 		SBoxPanel::FSlot& CurSlotUp = (*PanelChildrenUp)[i + 1];
 
@@ -151,6 +153,7 @@ void SScoreWidget::Tick(const FGeometry& AllottedGeometry, const double InCurren
 			CurSlotDown.GetWidget()->SetRenderOpacity(0.f);
 			CurSlotUp.GetWidget()->SetRenderTransform(FVector2D(0.f, 0.f));
 			CurSlotDown.GetWidget()->SetRenderTransform(FVector2D(0.f, 0.f));
+			CurSocre += FMath::Pow(10, 4 - i);
 		}
 	}
 
@@ -167,6 +170,11 @@ void SScoreWidget::SetupAnimation()
 
 	ScrollAnim = AnimSequence.AddCurve(0.f, 0.2f, ECurveEaseFunction::Linear);
 	AnimSequence.Play(this->AsShared());
+}
+
+void SScoreWidget::AddScore(int32 AddedScore)
+{
+	DestScore += AddedScore;
 }
 
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION
