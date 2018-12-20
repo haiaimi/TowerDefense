@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TDTypes.h"
 #include "TDMap.generated.h"
 
 UCLASS()
@@ -28,6 +29,9 @@ public:
 	/**炮台地基*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class ATDTowerBase> BaseTower;
+
+	/**所有炮台的类型*/
+	TArray<ETowerType::Type> AllTowerType;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -43,4 +47,5 @@ public:
 
 	void SpawnEnemy();
 	
+	void UpdateTowerType(ETowerType::Type InType, int32 Index);
 };

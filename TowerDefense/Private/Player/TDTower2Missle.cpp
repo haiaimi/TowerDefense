@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TDTower2Missle.h"
 #include <PaperSpriteComponent.h>
@@ -70,6 +70,7 @@ void ATDTower2Missle::Reload()
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.Owner = this;
 		AMissle* TmpMissle = GetWorld()->SpawnActor<AMissle>(MissleType, TowerBarrel->GetSocketTransform(*SocketName), SpawnParameters);
+		HAIAIMIHelper::Debug_ScreenMessage(TmpMissle->GetOwner()->GetFName().ToString());
 		TmpMissle->AttachToComponent(TowerBarrel, FAttachmentTransformRules::KeepWorldTransform, *SocketName);
 		if (TmpMissle)Missles.Add(TmpMissle);
 		SocketName = FString("Missle") + FString::FormatAsNumber(++MissleIndex);
@@ -120,6 +121,7 @@ FTransform ATDTower2Missle::GetNearestEnemy()
 
 void ATDTower2Missle::Destroyed()
 {
+	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);   //清除定时器
 	TArray<USceneComponent*> AllChildren;
 	AllChildren = TowerBarrel->GetAttachChildren();
 

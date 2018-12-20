@@ -10,6 +10,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "Common/HAIAIMIHelper.h"
 #include "TDMap.h"
+#include "TDTypes.h"
 
 
 
@@ -88,11 +89,24 @@ void ATDEnemy_Tank::FireLoop()
 
 FVector ATDEnemy_Tank::GetNearestTower()
 {
-	FVector ResultPoint;
+	FVector ResultPoint(0.f, 0.f, 0.f);
 	if (DestMap)
 	{
 		TArray<FVector>& Points = DestMap->BuildPoints;
-		if (TowerIndex + 1 >= Points.Num())
+		TArray<ETowerType::Type>& AllTowerType = DestMap->AllTowerType;
+
+		float MinDistance = INT_MAX;
+		for (int32 i = 0; i < Points.Num(); ++i)
+		{
+			if (AllTowerType[i] == ETowerType::EBase)continue;
+			float TmpDistance = (Points[i] - GetActorLocation()).Size();
+			if (TmpDistance < MinDistance)
+			{
+				ResultPoint = Points[i];
+				MinDistance = TmpDistance;
+			}
+		}
+		/*if (TowerIndex + 1 >= Points.Num())
 			return Points[TowerIndex];
 		else
 		{
@@ -103,7 +117,7 @@ FVector ATDEnemy_Tank::GetNearestTower()
 				return Points[TowerIndex];
 			else
 				return Points[++TowerIndex];
-		}
+		}*/
 	} 
 
 	return ResultPoint;

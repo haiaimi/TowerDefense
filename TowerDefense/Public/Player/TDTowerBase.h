@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -19,15 +19,18 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* TowerCollision;
 
-	/**ÉúÃüÖµ*/
+	/**ç”Ÿå‘½å€¼*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
 	float Health;
 
-	/**·ÀÓùËş±¬Õ¨Ğ§¹û*/
+	/**é˜²å¾¡å¡”çˆ†ç‚¸æ•ˆæœ*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class AExplosionEffect> TowerExpolsionEffect;
 
 	ETowerType::Type TowerType;
+
+	/**åœ¨åœ°å›¾ä¸­æ˜¯ç¬¬å‡ ä¸ªç‚®å°*/
+	int32 InMapIndex;
 
 public:	
 	// Sets default values for this actor's properties

@@ -10,6 +10,7 @@
 #include <Engine/LocalPlayer.h>
 #include "UI/TDHUD.h"
 #include "../UI/Widgets/SScoreWidget.h"
+#include <Kismet/GameplayStatics.h>
 
 
 ATDController::ATDController() :CurMap(nullptr)
@@ -65,7 +66,14 @@ void ATDController::DetectMap()
 		ATDTowerBase* TowerBase = Cast<ATDTowerBase>(Result.GetActor());
 		if (TowerBase && TowerBase->TowerType == ETowerType::EBase)
 		{
-			GetWorld()->SpawnActor<ATDTowerBase>(Tower1, TowerBase->GetTransform());
+			ATDTowerBase* Tmp = GetWorld()->SpawnActorDeferred<ATDTowerBase>(Tower1, TowerBase->GetTransform(), TowerBase->GetOwner());
+			if (Tmp)
+			{
+				Tmp->InMapIndex = TowerBase->InMapIndex;
+				UGameplayStatics::FinishSpawningActor(Tmp, TowerBase->GetTransform());
+			}
+			//if (ATDMap* OwnerMap = Cast<ATDMap>(TowerBase->GetOwner()))
+			//	OwnerMap->UpdateTowerType(ETowerType::ETower2Missle, TowerBase->InMapIndex); //重新设置炮台类型
 			TowerBase->Destroy();
 			HAIAIMIHelper::Debug_ScreenMessage(TEXT("Hit Screen"));
 		}

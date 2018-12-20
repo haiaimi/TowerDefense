@@ -11,7 +11,7 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SScoreWidget::Construct(const FArguments& InArgs)
 {
 	CurSocre = 0;
-	DestScore = 65845;
+	DestScore = 1000;
 	UpNumbers.Init(0, 5);
 	DownNumbers.Init(1, 5);
 	NumberStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FNumberSlateStyle>(TEXT("NumberStyle"));
@@ -116,6 +116,7 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 					SNew(SImage)
 					.Image(DownAttributes[i])
 					.RenderTransform(FSlateRenderTransform(1.8f))
+					.RenderOpacity(0.f)
 				]
 		];
 	}
@@ -168,7 +169,7 @@ void SScoreWidget::SetupAnimation()
 {
 	AnimSequence = FCurveSequence();
 
-	ScrollAnim = AnimSequence.AddCurve(0.f, 0.2f, ECurveEaseFunction::Linear);
+	ScrollAnim = AnimSequence.AddCurve(0.f, 0.4f, ECurveEaseFunction::Linear);
 	AnimSequence.Play(this->AsShared());
 }
 

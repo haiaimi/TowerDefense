@@ -25,9 +25,14 @@ void ATDMap::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (auto& iter : BuildPoints)
+	AllTowerType.Init(ETowerType::EBase, BuildPoints.Num());
+
+	for (int32 i = 0; i < BuildPoints.Num(); ++i)
 	{
-		GetWorld()->SpawnActor<ATDTowerBase>(BaseTower, FTransform(FRotator::ZeroRotator, iter + FVector(0.f, 10.f, 0.f)));
+		FActorSpawnParameters SpawnParameter;
+		SpawnParameter.Owner = this;
+		ATDTowerBase* Tmp = GetWorld()->SpawnActor<ATDTowerBase>(BaseTower, FTransform(FRotator::ZeroRotator, BuildPoints[i] + FVector(0.f, 10.f, 0.f)), SpawnParameter);
+		Tmp->InMapIndex = i;
 	}
 }
 
@@ -35,12 +40,16 @@ void ATDMap::BeginPlay()
 void ATDMap::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void ATDMap::SpawnEnemy()
 {
 	if (Enemy_1)
 		GetWorld()->SpawnActor<ATDEnemy>(Enemy_1);
+}
+
+void ATDMap::UpdateTowerType(ETowerType::Type InType, int32 Index)
+{
+	AllTowerType[Index] = InType;
 }
 
