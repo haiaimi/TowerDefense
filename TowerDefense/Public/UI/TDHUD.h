@@ -28,4 +28,6 @@ public:
 
 private:
 	TSharedPtr<class SScoreWidget> ScoreWidget;
+
+	TSharedPtr<class STowerSelectWidget> TowerSelectWidget;
 };

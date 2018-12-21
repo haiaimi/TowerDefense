@@ -163,12 +163,6 @@ void SScoreWidget::Tick(const FGeometry& AllottedGeometry, const double InCurren
 			AnimSequence[i].JumpToStart();
 		}
 	}
-
-	/*if (AnimSequence.IsAtEnd())
-	{
-		AnimSequence.JumpToStart();
-		AnimSequence.Play(this->AsShared());
-	}*/
 }
 
 void SScoreWidget::SetupAnimation()

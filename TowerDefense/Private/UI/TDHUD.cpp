@@ -5,10 +5,12 @@
 #include <Engine/GameViewportClient.h>
 #include "Common/HAIAIMIHelper.h"
 #include "Widgets/SScoreWidget.h"
+#include "Widgets/STowerSelectWidget.h"
 
 
 ATDHUD::ATDHUD() :
-	ScoreWidget(NULL)
+	ScoreWidget(NULL),
+	TowerSelectWidget(NULL)
 {
 
 }
@@ -28,6 +30,17 @@ void ATDHUD::DrawHUD()
 			);
 
 		//ScoreWidget->SetVisibility(EVisibility::HitTestInvisible);
+	}
+
+	if (!TowerSelectWidget.IsValid() && GEngine)
+	{
+		SAssignNew(TowerSelectWidget, STowerSelectWidget);
+
+		GEngine->GameViewport->AddViewportWidgetContent(
+			SNew(SWeakWidget)
+			.PossiblyNullContent(TowerSelectWidget.ToSharedRef()),
+			0
+		);
 	}
 }
 

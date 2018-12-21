@@ -59,6 +59,9 @@ void ATDController::SpawnEnemy()
 void ATDController::DetectMap()
 {
 	FVector WorldLocation, Dir;
+	FVector2D MousePos;
+	GetMousePosition(MousePos.X, MousePos.Y);
+	HAIAIMIHelper::Debug_ScreenMessage(MousePos.ToString());
 	
 	FHitResult Result;
 	if (GetHitResultUnderCursor(ECollisionChannel::ECC_WorldDynamic, true, Result))
