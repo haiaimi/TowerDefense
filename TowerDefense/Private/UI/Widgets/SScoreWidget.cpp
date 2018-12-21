@@ -14,6 +14,8 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 	DestScore = 1000;
 	UpNumbers.Init(0, 5);
 	DownNumbers.Init(1, 5);
+	ScrollAnim.SetNum(5);
+	AnimSequence.SetNum(5);
 	NumberStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FNumberSlateStyle>(TEXT("NumberStyle"));
 
 	TArray<TAttribute<const FSlateBrush*>> UpAttributes;
@@ -129,11 +131,14 @@ void SScoreWidget::Tick(const FGeometry& AllottedGeometry, const double InCurren
 	if (CurSocre == DestScore)return;      //分数相同就直接跳过下面的步骤
 	FChildren* ChildrenUp = ScoreNumsUp->GetChildren();
 	FChildren* ChildrenDown = ScoreNumsDown->GetChildren();
-	const float CurLerp = ScrollAnim.GetLerp();
 
 	for (int32 i = 0; i < 5; ++i)
 	{
-		if (UpNumbers[i] == GetSpecifiedNumber(i))continue;
+		const float CurLerp = ScrollAnim[i].GetLerp();
+		if (UpNumbers[i] == GetSpecifiedNumber(i))
+			continue;
+		else if (AnimSequence[i].IsAtStart())
+			AnimSequence[i].Play(this->AsShared());
 
 		TPanelChildren<SBoxPanel::FSlot>* PanelChildrenUp = (TPanelChildren<SBoxPanel::FSlot>*)ChildrenUp;
 		SBoxPanel::FSlot& CurSlotUp = (*PanelChildrenUp)[i + 1];
@@ -145,7 +150,7 @@ void SScoreWidget::Tick(const FGeometry& AllottedGeometry, const double InCurren
 		CurSlotUp.GetWidget()->SetRenderTransform(FVector2D(0.f, -50.f*CurLerp));
 		CurSlotDown.GetWidget()->SetRenderTransform(FVector2D(0.f, -50.f*CurLerp));
 
-		if (AnimSequence.IsAtEnd())       //一个轮回结束
+		if (AnimSequence[i].IsAtEnd())       //一个轮回结束
 		{
 			UpNumbers[i] = (UpNumbers[i] + 1) % 10;
 			DownNumbers[i] = (DownNumbers[i] + 1) % 10;
@@ -155,22 +160,26 @@ void SScoreWidget::Tick(const FGeometry& AllottedGeometry, const double InCurren
 			CurSlotUp.GetWidget()->SetRenderTransform(FVector2D(0.f, 0.f));
 			CurSlotDown.GetWidget()->SetRenderTransform(FVector2D(0.f, 0.f));
 			CurSocre += FMath::Pow(10, 4 - i);
+			AnimSequence[i].JumpToStart();
 		}
 	}
 
-	if (AnimSequence.IsAtEnd())
+	/*if (AnimSequence.IsAtEnd())
 	{
 		AnimSequence.JumpToStart();
 		AnimSequence.Play(this->AsShared());
-	}
+	}*/
 }
 
 void SScoreWidget::SetupAnimation()
 {
-	AnimSequence = FCurveSequence();
+	for (int32 i = 0; i < AnimSequence.Num(); ++i)
+	{
+		AnimSequence[i] = FCurveSequence();
 
-	ScrollAnim = AnimSequence.AddCurve(0.f, 0.4f, ECurveEaseFunction::Linear);
-	AnimSequence.Play(this->AsShared());
+		ScrollAnim[i] = AnimSequence[i].AddCurve(0.f, 0.2f, ECurveEaseFunction::Linear);
+		AnimSequence[i].Play(this->AsShared());
+	}
 }
 
 void SScoreWidget::AddScore(int32 AddedScore)

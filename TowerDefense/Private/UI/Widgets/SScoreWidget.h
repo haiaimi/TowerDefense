@@ -44,9 +44,9 @@ private:
 
 	TSharedPtr<SHorizontalBox> ScoreNumsDown;
 
-	FCurveSequence AnimSequence;
+	TArray<FCurveSequence> AnimSequence;
 
-	FCurveHandle ScrollAnim;
+	TArray<FCurveHandle> ScrollAnim;
 
 	TArray<int32> UpNumbers;
 
