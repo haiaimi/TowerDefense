@@ -3,6 +3,7 @@
 #include "Common/HAIAIMIHelper.h"
 #include "TowerDefense.h"
 #include <Engine/Engine.h>
+#include <Engine/GameViewportClient.h>
 
 
 void HAIAIMIHelper::Debug_ScreenMessage(FString&& InString, float ShowTime, FColor FontColor)
@@ -33,4 +34,18 @@ float HAIAIMIHelper::AdaptAngle(const float InAngle)
 	else if (InAngle < -180.f)
 		return 360.f + InAngle;
 	else return InAngle;
+}
+
+FVector2D HAIAIMIHelper::ConvertToNormalCoord(FVector2D Pos)
+{
+	FVector2D Res = Pos;
+	if (GEngine&&GEngine->GameViewport)
+	{
+		FVector2D Size;
+		GEngine->GameViewport->GetViewportSize(Size);
+		Res.X = Pos.X * 1920.f / Size.X;
+		Res.Y = Pos.Y * 1080.f / Size.Y;
+	}
+	
+	return Res;
 }

@@ -23,6 +23,11 @@ public:
 
 	TSubclassOf<class ATDTowerBase> Tower1;
 
+private:
+	int32 CurScore;
+
+	TArray<TSharedPtr<class STowerSelectWidget>> TowerWidgets;
+
 public:
 	ATDController();
 
@@ -36,4 +41,8 @@ public:
 	void DetectMap();
 
 	void AddScore(int32 AddedScore);
+
+	int32 GetPlayerScore() { return CurScore; }
+
+	bool SpawnTower(const int32 TowerIndex, ATDTowerBase* BaseTower);
 };

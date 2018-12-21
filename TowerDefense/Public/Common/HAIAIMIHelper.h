@@ -17,4 +17,6 @@ public:
 	static float AdaptSubAngle(const float InAngle1, const float InAngle2);
 
 	static float AdaptAngle(const float InAngle);
+
+	static FVector2D ConvertToNormalCoord(FVector2D Pos);
 };

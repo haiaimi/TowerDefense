@@ -32,7 +32,7 @@ void ATDHUD::DrawHUD()
 		//ScoreWidget->SetVisibility(EVisibility::HitTestInvisible);
 	}
 
-	if (!TowerSelectWidget.IsValid() && GEngine)
+	/*if (!TowerSelectWidget.IsValid() && GEngine)
 	{
 		SAssignNew(TowerSelectWidget, STowerSelectWidget);
 
@@ -41,7 +41,7 @@ void ATDHUD::DrawHUD()
 			.PossiblyNullContent(TowerSelectWidget.ToSharedRef()),
 			0
 		);
-	}
+	}*/
 }
 
 void ATDHUD::BeginPlay()

@@ -32,6 +32,10 @@ public:
 	/**在地图中是第几个炮台*/
 	int32 InMapIndex;
 
+private:
+	/**建造所需消耗的金币*/
+	int32 BuildCost;
+
 public:	
 	// Sets default values for this actor's properties
 	ATDTowerBase();
@@ -45,4 +49,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
+
+	int32 GetBuildCost() { return BuildCost; }
 };
