@@ -13,13 +13,11 @@
 #include <Kismet/GameplayStatics.h>
 #include "../UI/Widgets/STowerSelectWidget.h"
 
-static const TArray<FVector2D> TowerWidgetDirs = { FVector2D(-1,-1),FVector2D(0,-1),FVector2D(1,-1) };
-
 ATDController::ATDController() :
 	CurMap(nullptr),
-	CurScore(1000)
+	CurScore(1000),
+	TowerWidget(nullptr)
 {
-	TowerWidgets.SetNum(3);
 	static ConstructorHelpers::FClassFinder<ATDMap> DefaultMapFinder(TEXT("/Game/Blueprint/maps/map1"));
 	static ConstructorHelpers::FClassFinder<ATDTowerBase> TowerFinder(TEXT("/Game/Blueprint/Weapon/Tower2Missle"));
 	if (DefaultMapFinder.Succeeded())
@@ -46,8 +44,6 @@ void ATDController::BeginPlay()
 	{
 		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
 	}
-
-	AddScore(CurScore);
 }
 
 void ATDController::SetupInputComponent()
@@ -76,48 +72,39 @@ void ATDController::DetectMap()
 		ATDTowerBase* TowerBase = Cast<ATDTowerBase>(Result.GetActor());
 		if (TowerBase && TowerBase->TowerType == ETowerType::EBase)
 		{
-			for (int32 i = 0; i < TowerWidgetDirs.Num(); ++i)
-			{
-				HAIAIMIHelper::Debug_ScreenMessage(TEXT("Hit Screen"));
-				SAssignNew(TowerWidgets[i], STowerSelectWidget)
-					.CurController(this)
-					.StartPos(HAIAIMIHelper::ConvertToNormalCoord(MousePos))
-					.MoveDir(TowerWidgetDirs[i])
-					.OffsetTime(i*0.1f)
-					.CurBaseTower(TowerBase)
-					.SpecifiedTower(Tower1);
+			SAssignNew(TowerWidget, STowerSelectWidget)
+				.StartPos(HAIAIMIHelper::ConvertToNormalCoord(MousePos))
+				.CurController(this)
+				.CurBaseTower(TowerBase);
 
-				GEngine->GameViewport->AddViewportWidgetContent(
-					SNew(SWeakWidget)
-					.PossiblyNullContent(TowerWidgets[i].ToSharedRef()),
-					0
-				);
-
-				TowerWidgets[i]->SetEnabled(true);
-			}
-
-			for (auto iter : TowerWidgets)
-				iter->SetEnabled(true);
-			/*ATDTowerBase* Tmp = GetWorld()->SpawnActorDeferred<ATDTowerBase>(Tower1, TowerBase->GetTransform(), TowerBase->GetOwner());
-			if (Tmp)
-			{
-				Tmp->InMapIndex = TowerBase->InMapIndex;
-				UGameplayStatics::FinishSpawningActor(Tmp, TowerBase->GetTransform());
-			}
-			TowerBase->Destroy();
-			HAIAIMIHelper::Debug_ScreenMessage(TEXT("Hit Screen"));*/
+			GEngine->GameViewport->AddViewportWidgetContent(
+				SNew(SWeakWidget)
+				.PossiblyNullContent(TowerWidget.ToSharedRef()),
+				0
+			);
 		}
+	}
+	else
+	{
+		if (TowerWidget.IsValid())
+			TowerWidget->ReserveButtons();
 	}
 }
 
 void ATDController::AddScore(int32 AddedScore)
 {
+	CurScore += AddedScore;
 	if (ATDHUD* CurHUD = Cast<ATDHUD>(GetHUD()))
 	{
 		TSharedPtr<class SScoreWidget> ScoreWidget = CurHUD->GetScoreWidget();
 		if (ScoreWidget.IsValid())
 			ScoreWidget->AddScore(AddedScore);
 	}
+}
+
+int32 ATDController::GetSpecifiedTowerCost(int32 Index)
+{
+	return Tower1.GetDefaultObject()->GetBuildCost();
 }
 
 bool ATDController::SpawnTower(const int32 TowerIndex, ATDTowerBase* BaseTower)
@@ -130,7 +117,14 @@ bool ATDController::SpawnTower(const int32 TowerIndex, ATDTowerBase* BaseTower)
 	{
 		SpawnedTower->InMapIndex = BaseTower->InMapIndex;
 		UGameplayStatics::FinishSpawningActor(SpawnedTower, BaseTower->GetTransform());
+		AddScore(-BuildCost);
 	}
 
 	return SpawnedTower != NULL;
+}
+
+void ATDController::ResetSelectWidget()
+{
+	if (TowerWidget.IsValid())
+		TowerWidget.Reset();
 }

@@ -31,19 +31,21 @@ public:
 	void Construct(const FArguments& InArgs);
 
 	void SetupAnimation();
-
-	void BuildTower();
+	
+	void ReserveButtons();
 
 private:
 	const struct FNumberSlateStyle* NumberStyle;
 
 	const struct FTowerSelectStyle* TowerSelectStyle;
 	
-	TSharedPtr<SBox> WidgetBox;
+	TSharedPtr<SOverlay> ButtonsOverlay;
+
+	TArray<TSharedPtr<class STowerButtonWidget>> TowerButtons;
 
 	TSharedPtr<SHorizontalBox> TowerCostNumbers;
 
-	FCurveHandle MoveAnim;
+	TArray<FCurveHandle> MoveAnim;
 
 	FCurveSequence MoveSecquence;
 	

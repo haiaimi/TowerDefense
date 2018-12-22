@@ -29,10 +29,14 @@ void ATDHUD::DrawHUD()
 			0
 			);
 
-		//ScoreWidget->SetVisibility(EVisibility::HitTestInvisible);
+		if (GetWorld())
+		{
+			if (ATDController* CurController = Cast<ATDController>(GetWorld()->GetFirstPlayerController()))
+				CurController->AddScore(CurController->GetPlayerScore());
+		}
 	}
 
-	/*if (!TowerSelectWidget.IsValid() && GEngine)
+	if (!TowerSelectWidget.IsValid() && GEngine)
 	{
 		SAssignNew(TowerSelectWidget, STowerSelectWidget);
 
@@ -41,7 +45,7 @@ void ATDHUD::DrawHUD()
 			.PossiblyNullContent(TowerSelectWidget.ToSharedRef()),
 			0
 		);
-	}*/
+	}
 }
 
 void ATDHUD::BeginPlay()

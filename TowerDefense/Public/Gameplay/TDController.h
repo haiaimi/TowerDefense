@@ -26,7 +26,7 @@ public:
 private:
 	int32 CurScore;
 
-	TArray<TSharedPtr<class STowerSelectWidget>> TowerWidgets;
+	TSharedPtr<class STowerSelectWidget> TowerWidget;
 
 public:
 	ATDController();
@@ -44,5 +44,10 @@ public:
 
 	int32 GetPlayerScore() { return CurScore; }
 
+	int32 GetSpecifiedTowerCost(int32 Index);
+
 	bool SpawnTower(const int32 TowerIndex, ATDTowerBase* BaseTower);
+
+	/**重置选择TowerUI*/
+	void ResetSelectWidget();
 };

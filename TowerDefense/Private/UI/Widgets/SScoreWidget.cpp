@@ -9,12 +9,10 @@
 #include "STowerSelectWidget.h"
 #include <Engine/Engine.h>
 #include <Engine/GameViewportClient.h>
-static const TArray<FVector2D> TowerWidgetDirs = { FVector2D(-1,-1),FVector2D(0,-1),FVector2D(1,-1) };
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SScoreWidget::Construct(const FArguments& InArgs)
 {
-	TowerWidgets.SetNum(3);
 	CurSocre = 0;
 	DestScore = 0;
 	UpNumbers.Init(0, 5);
@@ -176,23 +174,8 @@ void SScoreWidget::SetupAnimation()
 	{
 		AnimSequence[i] = FCurveSequence();
 
-		ScrollAnim[i] = AnimSequence[i].AddCurve(0.f, 0.2f, ECurveEaseFunction::Linear);
+		ScrollAnim[i] = AnimSequence[i].AddCurve(0.f, 0.1f, ECurveEaseFunction::Linear);
 		AnimSequence[i].Play(this->AsShared());
-	}
-
-	for (int32 i = 0; i < TowerWidgetDirs.Num(); ++i)
-	{
-		SAssignNew(TowerWidgets[i], STowerSelectWidget)
-			.StartPos(FVector2D(400.f,400.f))
-			.MoveDir(TowerWidgetDirs[i]);
-
-		GEngine->GameViewport->AddViewportWidgetContent(
-			SNew(SWeakWidget)
-			.PossiblyNullContent(TowerWidgets[i].ToSharedRef()),
-			0
-		);
-
-		TowerWidgets[i]->SetEnabled(true);
 	}
 }
 

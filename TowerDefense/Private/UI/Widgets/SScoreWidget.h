@@ -51,6 +51,4 @@ private:
 	TArray<int32> UpNumbers;
 
 	TArray<int32> DownNumbers;
-
-	TArray<TSharedPtr<class STowerSelectWidget>> TowerWidgets;
 };
