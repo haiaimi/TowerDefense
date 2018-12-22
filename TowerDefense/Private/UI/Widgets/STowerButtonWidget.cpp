@@ -10,7 +10,6 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void STowerButtonWidget::Construct(const FArguments& InArgs)
 {
 	NumberStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FNumberSlateStyle>(TEXT("NumberStyle"));
-	TowerSelectStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FTowerSelectStyle>(TEXT("TowerSelectStyle"));
 
 	TAttribute<TOptional<FSlateRenderTransform>> ScaleAttribute;
 	const int32 TowerCost = InArgs._TowerCost;
@@ -40,7 +39,7 @@ void STowerButtonWidget::Construct(const FArguments& InArgs)
 					.HAlign(EHorizontalAlignment::HAlign_Fill)
 					.RenderTransformPivot(FVector2D(0.5f, 0.5f))
 					.RenderTransform(InArgs._ButtonScale)
-					.BorderImage(&TowerSelectStyle->Border)
+					.BorderImage(InArgs._BorderImage)
 					[
 						SNew(SButton)
 						.VAlign(EVerticalAlignment::VAlign_Fill)
@@ -50,8 +49,8 @@ void STowerButtonWidget::Construct(const FArguments& InArgs)
 						[
 							SNew(SImage)
 							.RenderTransformPivot(FVector2D(0.5f, 0.5f))
-							.RenderTransform(FSlateRenderTransform(0.9f))
-							.Image(&TowerSelectStyle->TwoMissle)
+							.RenderTransform(FSlateRenderTransform(0.8f))
+							.Image(InArgs._TowerImage)
 						]
 					]
 				]

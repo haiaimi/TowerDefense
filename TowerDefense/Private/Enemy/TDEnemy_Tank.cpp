@@ -106,18 +106,6 @@ FVector ATDEnemy_Tank::GetNearestTower()
 				MinDistance = TmpDistance;
 			}
 		}
-		/*if (TowerIndex + 1 >= Points.Num())
-			return Points[TowerIndex];
-		else
-		{
-			const float TankToCur = (Points[TowerIndex] - GetActorLocation()).Size();
-			const float TankToNext = (Points[TowerIndex + 1] - GetActorLocation()).Size();
-
-			if (TankToCur <= TankToNext)
-				return Points[TowerIndex];
-			else
-				return Points[++TowerIndex];
-		}*/
 	} 
 
 	return ResultPoint;

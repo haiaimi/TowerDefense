@@ -36,7 +36,7 @@ void STowerSelectWidget::Construct(const FArguments& InArgs)
 		TAttribute<TOptional<FSlateRenderTransform>>::FGetter ScaleGetter;
 		PaddingGetter.BindLambda([i,this]() {
 			const float CurLerp = MoveAnim[i].GetLerp();
-			FVector2D NewPos = StartPos + 200 * TowerWidgetDirs[i].GetSafeNormal() * CurLerp;
+			FVector2D NewPos = StartPos + 210 * TowerWidgetDirs[i].GetSafeNormal() * CurLerp;
 			
 			const float Scale = 0.5f + 0.5f*CurLerp;
 			TowerButtons[i]->SetRenderOpacity(CurLerp);
@@ -79,6 +79,8 @@ void STowerSelectWidget::Construct(const FArguments& InArgs)
 
 	for (int32 i = 0; i < 3; ++i)
 	{
+		FSlateBrush* BorderImage = const_cast<FSlateBrush*>(&TowerSelectStyle->Border);
+		FSlateBrush* TowerImage = const_cast<FSlateBrush*>(&TowerSelectStyle->TowerImages[i]);
 		ButtonsOverlay->AddSlot()
 			.HAlign(EHorizontalAlignment::HAlign_Left)
 			.VAlign(EVerticalAlignment::VAlign_Top)
@@ -88,6 +90,8 @@ void STowerSelectWidget::Construct(const FArguments& InArgs)
 				.ButtonScale(ButtonScales[i])
 				.OnClicked(ClickEvent[i])
 				.TowerCost(CurController.IsValid()?CurController->GetSpecifiedTowerCost(i):300)
+				.BorderImage(BorderImage)
+				.TowerImage(TowerImage)
 			];
 	}
 

@@ -18,6 +18,8 @@ public:
 	SLATE_ATTRIBUTE(TOptional<FSlateRenderTransform>, ButtonScale)
 	SLATE_EVENT(FOnClicked, OnClicked)
 	SLATE_ARGUMENT(int32, TowerCost)
+	SLATE_ARGUMENT(FSlateBrush*, TowerImage)
+	SLATE_ARGUMENT(FSlateBrush*, BorderImage)
 	SLATE_END_ARGS()
 
 	/** Constructs this widget with InArgs */
@@ -33,6 +35,4 @@ private:
 	TSharedPtr<SHorizontalBox> TowerCostNumbers;
 
 	const struct FNumberSlateStyle* NumberStyle;
-
-	const struct FTowerSelectStyle* TowerSelectStyle;
 };

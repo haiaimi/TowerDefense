@@ -6,11 +6,12 @@
 #include "Common/HAIAIMIHelper.h"
 #include "Widgets/SScoreWidget.h"
 #include "Widgets/STowerSelectWidget.h"
+#include "Widgets/SRepairWidget.h"
 
 
 ATDHUD::ATDHUD() :
 	ScoreWidget(NULL),
-	TowerSelectWidget(NULL)
+	RepairWidget(NULL)
 {
 
 }
@@ -36,13 +37,13 @@ void ATDHUD::DrawHUD()
 		}
 	}
 
-	if (!TowerSelectWidget.IsValid() && GEngine)
+	if (!RepairWidget.IsValid() && GEngine)
 	{
-		SAssignNew(TowerSelectWidget, STowerSelectWidget);
+		SAssignNew(RepairWidget, SRepairWidget);
 
 		GEngine->GameViewport->AddViewportWidgetContent(
 			SNew(SWeakWidget)
-			.PossiblyNullContent(TowerSelectWidget.ToSharedRef()),
+			.PossiblyNullContent(RepairWidget.ToSharedRef()),
 			0
 		);
 	}

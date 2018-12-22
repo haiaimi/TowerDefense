@@ -21,10 +21,7 @@ public:
 	{}
 	SLATE_ARGUMENT(TWeakObjectPtr<ATDController>, CurController)
 	SLATE_ARGUMENT(FVector2D, StartPos)
-	SLATE_ARGUMENT(FVector2D, MoveDir)
-	SLATE_ARGUMENT(float, OffsetTime)
 	SLATE_ARGUMENT(TWeakObjectPtr<ATDTowerBase>, CurBaseTower)
-	SLATE_ARGUMENT(TSubclassOf<ATDTowerBase>, SpecifiedTower)
 	SLATE_END_ARGS()
 
 	/** Constructs this widget with InArgs */

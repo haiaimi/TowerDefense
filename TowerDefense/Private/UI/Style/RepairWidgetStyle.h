@@ -7,43 +7,43 @@
 #include "SlateWidgetStyleContainerBase.h"
 #include <SlateBrush.h>
 
-#include "TowerSelectWidgetStyle.generated.h"
+#include "RepairWidgetStyle.generated.h"
 
 /**
  * 
  */
 USTRUCT()
-struct FTowerSelectStyle : public FSlateWidgetStyle
+struct FRepairStyle : public FSlateWidgetStyle
 {
 	GENERATED_USTRUCT_BODY()
 
-	FTowerSelectStyle();
-	virtual ~FTowerSelectStyle();
+	FRepairStyle();
+	virtual ~FRepairStyle();
 
 	// FSlateWidgetStyle
 	virtual void GetResources(TArray<const FSlateBrush*>& OutBrushes) const override;
 	static const FName TypeName;
 	virtual const FName GetTypeName() const override { return TypeName; };
-	static const FTowerSelectStyle& GetDefault();
+	static const FRepairStyle& GetDefault();
 
 	UPROPERTY(EditAnywhere, Category = Appearance)
-	struct FSlateBrush  Border;
+	struct FSlateBrush RepairIcon;
 
 	UPROPERTY(EditAnywhere, Category = Appearance)
-	TArray<struct FSlateBrush> TowerImages;
+	struct FSlateBrush RepairAction;
 };
 
 /**
  */
 UCLASS(hidecategories=Object, MinimalAPI)
-class UTowerSelectWidgetStyle : public USlateWidgetStyleContainerBase
+class URepairWidgetStyle : public USlateWidgetStyleContainerBase
 {
 	GENERATED_BODY()
 
 public:
 	/** The actual data describing the widget appearance. */
 	UPROPERTY(Category=Appearance, EditAnywhere, meta=(ShowOnlyInnerProperties))
-	FTowerSelectStyle WidgetStyle;
+	FRepairStyle WidgetStyle;
 
 	virtual const struct FSlateWidgetStyle* const GetStyle() const override
 	{
