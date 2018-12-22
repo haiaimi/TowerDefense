@@ -109,6 +109,7 @@ int32 ATDController::GetSpecifiedTowerCost(int32 Index)
 
 bool ATDController::SpawnTower(const int32 TowerIndex, ATDTowerBase* BaseTower)
 {
+	HAIAIMIHelper::Debug_ScreenMessage(FString::FormatAsNumber(CurScore));
 	int32 BuildCost = Tower1.GetDefaultObject()->GetBuildCost();
 	if (BuildCost > CurScore)return false;
 	if (!GetWorld())return false;

@@ -49,7 +49,6 @@ void ATDTower2Missle::Tick(float DeltaTime)
 
 	TowerBarrelPitch += (DotRes > 0 ? 50.f : -50.f)*DeltaTime;
 	TowerBarrel->SetWorldRotation(FRotator(TowerBarrelPitch, 0.f, 0.f));
-	//HAIAIMIHelper::Debug_ScreenMessage(FString::SanitizeFloat(TowerBarrelPitch));
 	if (FireInterval <= 0.f)
 	{
 		FVector FDir = FRotationMatrix(TowerBarrel->GetComponentRotation()).GetUnitAxis(EAxis::Z);

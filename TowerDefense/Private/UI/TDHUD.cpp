@@ -32,7 +32,7 @@ void ATDHUD::DrawHUD()
 		if (GetWorld())
 		{
 			if (ATDController* CurController = Cast<ATDController>(GetWorld()->GetFirstPlayerController()))
-				CurController->AddScore(CurController->GetPlayerScore());
+				ScoreWidget->AddScore(CurController->GetPlayerScore());
 		}
 	}
 
