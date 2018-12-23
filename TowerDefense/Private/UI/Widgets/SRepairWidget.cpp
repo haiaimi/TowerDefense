@@ -9,6 +9,7 @@
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SRepairWidget::Construct(const FArguments& InArgs)
 {
+	TowerBase = InArgs._TowerBase;
 	bInRepair = false;
 	RepairStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FRepairStyle>(TEXT("RepairStyle"));
 
@@ -57,9 +58,15 @@ void SRepairWidget::Tick(const FGeometry& AllottedGeometry, const double InCurre
 
 FReply SRepairWidget::OnButtonClicked()
 {
+	if (!bInRepair)
+	{
+		RepairImage->SetImage(&RepairStyle->RepairAction);
+		SetupAnimation(); //开始修理的动画
+	}
+	if (TowerBase)
+		TowerBase->HealSelf();
 	bInRepair = true;
-	RepairImage->SetImage(&RepairStyle->RepairAction);
-	SetupAnimation(); //开始修理的动画
+	
 	return FReply::Handled();
 }
 

@@ -18,10 +18,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	class UPaperSpriteComponent* TowerBarrel;
 
-	/**炮台损坏的冒烟动画*/
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TSubclassOf<class AExplosionEffect> InjureSmoke;
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class AMissle> MissleType;
 
@@ -36,8 +32,6 @@ public:
 
 	/**开火定时器*/
 	FTimerHandle ReloadTimer;
-
-	FTimerHandle InjuredTimer;
 
 public:
 	ATDTower2Missle();
@@ -57,5 +51,5 @@ public:
 
 	virtual void Destroyed()override;
 
-	virtual void OnInjured();
+	virtual void OnInjured()override;
 };

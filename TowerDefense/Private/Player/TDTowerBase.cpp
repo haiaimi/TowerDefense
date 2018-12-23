@@ -15,6 +15,8 @@
 #include "../UI/Widgets/SRepairWidget.h"
 #include "Common/HAIAIMIHelper.h"
 #include <Engine/GameViewportClient.h>
+#include "ExplosionEffect.h"
+#include <TimerManager.h>
 
 
 // Sets default values
@@ -24,7 +26,8 @@ ATDTowerBase::ATDTowerBase() :
 	TowerType(ETowerType::EBase),
 	InMapIndex(0),
 	BuildCost(400),
-	RepairWidget(NULL)
+	RepairWidget(NULL),
+	InjureSmoke(NULL)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -69,6 +72,7 @@ void ATDTowerBase::Tick(float DeltaTime)
 
 float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
+	HAIAIMIHelper::Debug_ScreenMessage(TEXT("OnAttack"));
 	Health -= DamageAmount;
 	if (Health / MaxHealth < 1.f && GetWorld())
 	{
@@ -82,7 +86,8 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 			{
 				OnInjured();
 				SAssignNew(RepairWidget, SRepairWidget)
-				.SpawnPos(HAIAIMIHelper::ConvertToNormalCoord(ScreenLocation));
+					.SpawnPos(HAIAIMIHelper::ConvertToNormalCoord(ScreenLocation))
+					.TowerBase(this);
 
 				GEngine->GameViewport->AddViewportWidgetContent(
 					SNew(SWeakWidget)
@@ -111,5 +116,31 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	}
 
 	return 0.f;
+}
+
+void ATDTowerBase::OnInjured()
+{
+	HAIAIMIHelper::Debug_ScreenMessage(TEXT("OnInjured"), 5.f);
+	GetWorld()->GetTimerManager().SetTimer(InjuredTimer, this, &ATDTowerBase::OnInjured, 2.f, false);
+
+	FTransform CurTransform = GetActorTransform();
+	CurTransform.SetScale3D(FVector(0.1f, 0.1f, 0.1f));
+	CurTransform.SetLocation(CurTransform.GetLocation() + FVector(-40.f, 0.f, 40.f));
+	GetWorld()->SpawnActor<AExplosionEffect>(InjureSmoke, CurTransform);
+}
+
+void ATDTowerBase::HealSelf()
+{
+	GetWorld()->GetTimerManager().SetTimer(HealTimer, this, &ATDTowerBase::HealSelf, 1.f, false);
+
+	Health += 50.f;
+	if (Health / MaxHealth > 1.f)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(InjuredTimer);
+		GetWorld()->GetTimerManager().ValidateHandle(InjuredTimer);
+
+		if (RepairWidget.IsValid())
+			RepairWidget.Reset();
+	}
 }
 

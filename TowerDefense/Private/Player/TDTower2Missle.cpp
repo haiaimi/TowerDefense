@@ -125,6 +125,7 @@ FTransform ATDTower2Missle::GetNearestEnemy()
 void ATDTower2Missle::Destroyed()
 {
 	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);   //清除定时器
+	GetWorld()->GetTimerManager().ClearTimer(InjuredTimer);
 	TArray<USceneComponent*> AllChildren;
 	AllChildren = TowerBarrel->GetAttachChildren();
 
@@ -135,16 +136,13 @@ void ATDTower2Missle::Destroyed()
 			missle->Destroy();
 		}
 	}
+	if (RepairWidget.IsValid())
+		RepairWidget.Reset();
 
 	Super::Destroyed();
 }
 
 void ATDTower2Missle::OnInjured()
 {
-	GetWorld()->GetTimerManager().SetTimer(InjuredTimer, this, &ATDTower2Missle::OnInjured, 2.f, false);
-
-	FTransform CurTransform = GetActorTransform();
-	CurTransform.SetScale3D(FVector(0.1f, 0.1f, 0.1f));
-	CurTransform.SetLocation(CurTransform.GetLocation() + FVector(-40.f, 0.f, 40.f));
-	GetWorld()->SpawnActor<AExplosionEffect>(InjureSmoke, CurTransform);
+	Super::OnInjured();
 }

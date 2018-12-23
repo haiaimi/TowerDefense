@@ -30,12 +30,21 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class AExplosionEffect> TowerExpolsionEffect;
 
+	/**炮台损坏的冒烟动画*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<class AExplosionEffect> InjureSmoke;
+
 	ETowerType::Type TowerType;
 
 	/**在地图中是第几个炮台*/
 	int32 InMapIndex;
 
 	TSharedPtr<class SRepairWidget> RepairWidget;
+
+	FTimerHandle InjuredTimer;
+
+	/**治疗定时器*/
+	FTimerHandle HealTimer;
 
 private:
 	/**建造所需消耗的金币*/
@@ -57,5 +66,7 @@ public:
 
 	int32 GetBuildCost() { return BuildCost; }
 
-	virtual void OnInjured() {};
+	virtual void OnInjured();
+
+	virtual void HealSelf();
 };

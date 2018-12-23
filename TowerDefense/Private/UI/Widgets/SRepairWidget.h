@@ -6,6 +6,7 @@
 #include "SlateBasics.h"
 #include "SlateExtras.h"
 #include "Widgets/SCompoundWidget.h"
+#include "TDTowerBase.h"
 
 /**
  * 
@@ -13,9 +14,11 @@
 class SRepairWidget : public SCompoundWidget
 {
 public:
-	SLATE_BEGIN_ARGS(SRepairWidget)
+	SLATE_BEGIN_ARGS(SRepairWidget):
+		_TowerBase(nullptr)
 	{}
 	SLATE_ARGUMENT(FVector2D, SpawnPos)
+	SLATE_ARGUMENT(ATDTowerBase*, TowerBase)
 	SLATE_END_ARGS()
 
 	/** Constructs this widget with InArgs */
@@ -28,8 +31,10 @@ public:
 	void SetupAnimation();
 
 private:
-	bool bInRepair;
+	bool bInRepair; 
 	const struct FRepairStyle* RepairStyle;
+
+	ATDTowerBase* TowerBase;
 
 	TSharedPtr<SImage> RepairImage;
 
