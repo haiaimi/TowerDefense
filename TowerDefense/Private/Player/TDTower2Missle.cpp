@@ -11,6 +11,8 @@
 #include <Components/BoxComponent.h>
 #include <GameFramework/ProjectileMovementComponent.h>
 #include <Components/SceneComponent.h>
+#include <PaperFlipbookComponent.h>
+#include "ExplosionEffect.h"
 
 
 ATDTower2Missle::ATDTower2Missle() :
@@ -25,6 +27,8 @@ ATDTower2Missle::ATDTower2Missle() :
 	TowerCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
 	TowerCollision->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Ignore);
 	TowerCollision->SetCollisionResponseToChannel(COLLISION_ENEMYBULLET, ECollisionResponse::ECR_Block);
+
+	TowerBarrel->TranslucencySortPriority = 3;
 }
 
 void ATDTower2Missle::BeginPlay()
@@ -133,4 +137,14 @@ void ATDTower2Missle::Destroyed()
 	}
 
 	Super::Destroyed();
+}
+
+void ATDTower2Missle::OnInjured()
+{
+	GetWorld()->GetTimerManager().SetTimer(InjuredTimer, this, &ATDTower2Missle::OnInjured, 2.f, false);
+
+	FTransform CurTransform = GetActorTransform();
+	CurTransform.SetScale3D(FVector(0.1f, 0.1f, 0.1f));
+	CurTransform.SetLocation(CurTransform.GetLocation() + FVector(-40.f, 0.f, 40.f));
+	GetWorld()->SpawnActor<AExplosionEffect>(InjureSmoke, CurTransform);
 }

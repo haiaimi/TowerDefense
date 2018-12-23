@@ -21,6 +21,17 @@ public:
 
 	FTimerHandle AlphaTimer;
 
+	/**每帧时间*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float PerFrameTime;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FVector MoveDir;
+
+	/**缩放参数：X分量为初始尺寸，Y为尺寸增加速度*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FVector2D ScaleParam;
+
 	int CurSpriteIndex;
 
 public:	

@@ -37,7 +37,7 @@ void ATDHUD::DrawHUD()
 		}
 	}
 
-	if (!RepairWidget.IsValid() && GEngine)
+	/*if (!RepairWidget.IsValid() && GEngine)
 	{
 		SAssignNew(RepairWidget, SRepairWidget);
 
@@ -46,7 +46,7 @@ void ATDHUD::DrawHUD()
 			.PossiblyNullContent(RepairWidget.ToSharedRef()),
 			0
 		);
-	}
+	}*/
 }
 
 void ATDHUD::BeginPlay()

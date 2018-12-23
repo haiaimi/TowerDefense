@@ -24,6 +24,8 @@ ATDEnemy_Tank::ATDEnemy_Tank() :
 	TankFire->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TankBarrel->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	TankBarrel->SetupAttachment(RootComponent);
+	TankBarrel->TranslucencySortPriority = 2;
+
 	if (TankFire && TankBarrel)TankFire->SetupAttachment(TankBarrel);
 	CurType = EEnemyType::ETank;
 }
@@ -84,7 +86,8 @@ void ATDEnemy_Tank::FireLoop()
 {
 	GetWorld()->GetTimerManager().SetTimer(FireInterval, this, &ATDEnemy_Tank::FireLoop, 2.f, false);
 
-	Fire();
+	if (GetNearestTower() != FVector(0.f, 0.f, 0.f))
+		Fire();
 }
 
 FVector ATDEnemy_Tank::GetNearestTower()

@@ -34,6 +34,7 @@ ATDEnemy::ATDEnemy() :
 	EnemyCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	//EnemyCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	EnemyCollision->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Block);
+	EnemySprite->TranslucencySortPriority = 1;
 }
 
 // Called when the game starts or when spawned

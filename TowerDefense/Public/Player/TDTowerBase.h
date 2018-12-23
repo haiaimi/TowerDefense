@@ -19,8 +19,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* TowerCollision;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float MaxHealth;
+
 	/**生命值*/
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float Health;
 
 	/**防御塔爆炸效果*/
@@ -31,6 +34,8 @@ public:
 
 	/**在地图中是第几个炮台*/
 	int32 InMapIndex;
+
+	TSharedPtr<class SRepairWidget> RepairWidget;
 
 private:
 	/**建造所需消耗的金币*/
@@ -51,4 +56,6 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 
 	int32 GetBuildCost() { return BuildCost; }
+
+	virtual void OnInjured() {};
 };

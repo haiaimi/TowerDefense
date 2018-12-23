@@ -18,8 +18,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	class UPaperSpriteComponent* TowerBarrel;
 
+	/**ÅÚÌ¨Ëð»µµÄÃ°ÑÌ¶¯»­*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<class AExplosionEffect> InjureSmoke;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class AMissle> MissleType;
+
 	/**»ð¼ýµ¯*/
 	class TArray<class AMissle*> Missles;
 
@@ -31,6 +36,8 @@ public:
 
 	/**¿ª»ð¶¨Ê±Æ÷*/
 	FTimerHandle ReloadTimer;
+
+	FTimerHandle InjuredTimer;
 
 public:
 	ATDTower2Missle();
@@ -49,4 +56,6 @@ public:
 	FTransform GetNearestEnemy();
 
 	virtual void Destroyed()override;
+
+	virtual void OnInjured();
 };

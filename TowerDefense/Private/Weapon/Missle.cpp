@@ -26,7 +26,8 @@ AMissle::AMissle()
 	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Ignore);
 	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_ENEMYBULLET, ECollisionResponse::ECR_Ignore);
 	ProjectileSprite->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Ignore);
-
+	
+	BulletFire->TranslucencySortPriority = 4;
 	Damage = 100.f;
 }
 

@@ -10,14 +10,21 @@
 #include "ExplosionEffect.h"
 #include "TDMap.h"
 #include <Kismet/GameplayStatics.h>
+#include "TDController.h"
+#include <Engine/Engine.h>
+#include "../UI/Widgets/SRepairWidget.h"
+#include "Common/HAIAIMIHelper.h"
+#include <Engine/GameViewportClient.h>
 
 
 // Sets default values
 ATDTowerBase::ATDTowerBase() :
+	MaxHealth(200.f),
 	Health(200.f),
 	TowerType(ETowerType::EBase),
 	InMapIndex(0),
-	BuildCost(400)
+	BuildCost(400),
+	RepairWidget(NULL)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -37,6 +44,8 @@ ATDTowerBase::ATDTowerBase() :
 	TowerCollision->SetCollisionObjectType(COLLISION_TOWERBASE);
 	TowerCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	TowerCollision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECollisionResponse::ECR_Block);
+
+	TowerSprite->TranslucencySortPriority = 2;
 }
 
 // Called when the game starts or when spawned
@@ -61,19 +70,43 @@ void ATDTowerBase::Tick(float DeltaTime)
 float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
 	Health -= DamageAmount;
+	if (Health / MaxHealth < 1.f && GetWorld())
+	{
+		ATDController* CurController = Cast<ATDController>(GetWorld()->GetFirstPlayerController());
+		if (CurController)
+		{
+			FVector2D ScreenLocation;
+			CurController->ProjectWorldLocationToScreen(GetActorLocation() + FVector(50.f, 0.f, 120.f), ScreenLocation);
+
+			if (!RepairWidget.IsValid() && GEngine)
+			{
+				OnInjured();
+				SAssignNew(RepairWidget, SRepairWidget)
+				.SpawnPos(HAIAIMIHelper::ConvertToNormalCoord(ScreenLocation));
+
+				GEngine->GameViewport->AddViewportWidgetContent(
+					SNew(SWeakWidget)
+					.PossiblyNullContent(RepairWidget.ToSharedRef()),
+					0
+				);
+			}
+		}
+	}
 
 	if (Health < 0)
 	{
 		ATDTowerBase* Tmp = GetWorld()->SpawnActorDeferred<ATDTowerBase>(ATDTowerBase::StaticClass(), FTransform(GetActorRotation(), GetActorLocation()), GetOwner());
-		//ATDTowerBase* Tmp = GetWorld()->SpawnActor<ATDTowerBase>(GetActorLocation(), GetActorRotation());
 		if (Tmp)
 		{
 			Tmp->InMapIndex = InMapIndex;
 			UGameplayStatics::FinishSpawningActor(Tmp, FTransform(GetActorRotation(), GetActorLocation()));
 		}
 		FTransform ExplosionTransform = GetActorTransform();
-		ExplosionTransform.SetScale3D(FVector(2.f, 2.f, 2.f));
-		if (TowerExpolsionEffect)GetWorld()->SpawnActor<AExplosionEffect>(TowerExpolsionEffect, ExplosionTransform);
+		if (TowerExpolsionEffect)
+		{
+			AExplosionEffect* ExplosionEffect = GetWorld()->SpawnActor<AExplosionEffect>(TowerExpolsionEffect, ExplosionTransform);
+			ExplosionEffect->SetActorScale3D(FVector(2.f, 2.f, 2.f));
+		}
 		Destroy();
 	}
 

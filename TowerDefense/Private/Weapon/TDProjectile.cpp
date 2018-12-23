@@ -38,6 +38,7 @@ ATDProjectile::ATDProjectile():
 	
 	RootComponent = ProjectileCollision;
 	ProjectileSprite->SetupAttachment(RootComponent);
+	ProjectileSprite->TranslucencySortPriority = 4;
 }
 
 // Called when the game starts or when spawned

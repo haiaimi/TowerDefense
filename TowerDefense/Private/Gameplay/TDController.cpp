@@ -119,6 +119,7 @@ bool ATDController::SpawnTower(const int32 TowerIndex, ATDTowerBase* BaseTower)
 		SpawnedTower->InMapIndex = BaseTower->InMapIndex;
 		UGameplayStatics::FinishSpawningActor(SpawnedTower, BaseTower->GetTransform());
 		AddScore(-BuildCost);
+		BaseTower->Destroy();
 	}
 
 	return SpawnedTower != NULL;
