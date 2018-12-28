@@ -16,6 +16,9 @@ class TOWERDEFENSE_API ATDMenuHUD : public AHUD
 	
 public:
 	ATDMenuHUD();
+
+	virtual void DrawHUD()override;
 	
-	
+private:
+	TSharedPtr<class SMainMenuWidget> MainMenu;
 };
