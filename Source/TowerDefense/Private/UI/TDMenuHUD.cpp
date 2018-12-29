@@ -5,6 +5,7 @@
 #include "Widgets/SMainMenuWidget.h"
 #include <Engine/GameViewportClient.h>
 #include "Common/HAIAIMIHelper.h"
+#include "Delegate.h"
 
 
 ATDMenuHUD::ATDMenuHUD():
@@ -17,7 +18,10 @@ void ATDMenuHUD::DrawHUD()
 {
 	if (!MainMenu.IsValid() && GEngine)
 	{
-		SAssignNew(MainMenu, SMainMenuWidget);
+		FSimpleDelegate OnPressed;
+		OnPressed.BindUObject(this, &ATDMenuHUD::LaunchGame);
+		SAssignNew(MainMenu, SMainMenuWidget)
+			.OnPressed(OnPressed);
 
 		GEngine->GameViewport->AddViewportWidgetContent(
 			SNew(SWeakWidget)
@@ -27,4 +31,10 @@ void ATDMenuHUD::DrawHUD()
 	}
 
 	Super::DrawHUD();
+}
+
+void ATDMenuHUD::LaunchGame()
+{
+	if (GetWorld())
+		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"));
 }
