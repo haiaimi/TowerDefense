@@ -18,6 +18,8 @@ public:
 	ATDMenuHUD();
 
 	virtual void DrawHUD()override;
+
+	void LaunchGame();
 	
 private:
 	TSharedPtr<class SMainMenuWidget> MainMenu;
