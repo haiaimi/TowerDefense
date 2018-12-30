@@ -11,12 +11,17 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 {
 	UTexture2D* BackgroundImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/BattleField"), nullptr, LOAD_None, nullptr);
 	UTexture2D* BorderImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/Enemy/Smoke/smokeGrey0"), nullptr, LOAD_None, nullptr);
+	UTexture2D* BackButtonImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/map/Texture/towerDefense_tile015"), nullptr, LOAD_None, nullptr);
 	FSlateBrush* BackgroundBrush = new FSlateBrush;
 	FSlateBrush* BorderBrush = new FSlateBrush;
+	FSlateBrush* BackButtonBrush = new FSlateBrush;
 	BackgroundBrush->SetResourceObject(BackgroundImage);
 	BorderBrush->SetResourceObject(BorderImage);
+	BackButtonBrush->SetResourceObject(BackButtonImage);
 	BorderBrush->DrawAs = ESlateBrushDrawType::Box;
 	BorderBrush->Margin = FMargin(0.25);
+	BackButtonBrush->DrawAs = ESlateBrushDrawType::Box;
+	BackButtonBrush->Margin = FMargin(0.25);
 
 	TAttribute<FMargin>::FGetter MenuPaddingGetter;
 	TAttribute<FMargin> MenuPadding;
@@ -26,6 +31,15 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		});
 
 	MenuPadding.Bind(MenuPaddingGetter);
+
+	TAttribute<float>::FGetter BlurGetter;
+	TAttribute<float> BlurStrength;
+	BlurGetter.BindLambda([&]() {
+		const float CurLerp = RankAnims[0].GetLerp();
+		return 5.f*CurLerp;
+		});
+
+	BlurStrength.Bind(BlurGetter);
 	RankAnims.SetNum(11);
 	ChildSlot
 	[
@@ -45,7 +59,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		+SOverlay::Slot()
 		[
 			SNew(SBackgroundBlur)
-			.BlurStrength(5.f)
+			.BlurStrength(BlurStrength)
 		]
 		+SOverlay::Slot()
 		.HAlign(EHorizontalAlignment::HAlign_Left)
@@ -67,6 +81,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 						.VAlign(EVerticalAlignment::VAlign_Center)
 						.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
 						.OnPressed(this, &SMainMenuWidget::BackToMenu)
+						.IsEnabled(false)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("继续游戏"))))
@@ -90,7 +105,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 						.HAlign(EHorizontalAlignment::HAlign_Center)
 						.VAlign(EVerticalAlignment::VAlign_Center)
 						.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
-						.OnPressed(InArgs._OnPressed)
+						.OnPressed(InArgs._OnStart)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("开始游戏"))))
@@ -136,6 +151,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 						.HAlign(EHorizontalAlignment::HAlign_Center)
 						.VAlign(EVerticalAlignment::VAlign_Center)
 						.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
+						.OnPressed(InArgs._OnQuit)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("退出游戏"))))
@@ -155,8 +171,29 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		+SOverlay::Slot()
 		.HAlign(EHorizontalAlignment::HAlign_Left)
 		.VAlign(EVerticalAlignment::VAlign_Top)
+		.Padding(FMargin(100.f,950.f,0.f,0.f))
 		[
-			SAssignNew(BackButton,SButton)
+			SAssignNew(BackButton,SBorder)
+			.BorderImage(BackButtonBrush)
+			.Visibility(EVisibility::Hidden)
+			.IsEnabled(false)
+			[
+				SNew(SButton)
+				.ButtonColorAndOpacity(FLinearColor(1.f,1.f,1.f,0.3f))
+				.OnPressed(this,&SMainMenuWidget::BackToMenu)
+				[
+					SNew(SBox)
+					.WidthOverride(200.f)
+					.HeightOverride(80.f)
+					.HAlign(EHorizontalAlignment::HAlign_Center)
+					.VAlign(EVerticalAlignment::VAlign_Center)
+					[
+						SNew(STextBlock)
+						.Text(FText::FromString(FString(TEXT("返回"))))
+						.Font(FSlateFontInfo("Roboto",30))
+					]
+				]
+			]
 		]
 	];
 
@@ -181,7 +218,6 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		.BorderImage(BorderBrush)
 		.RenderTransform(RankAttributes[0])
 		.RenderTransformPivot(FVector2D(0.5f,0.5f))
-		.RenderOpacity(0.5f)
 		[
 			SNew(SBox)
 			.HAlign(EHorizontalAlignment::HAlign_Center)
@@ -227,7 +263,13 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 
 void SMainMenuWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
-	if (RankSequence.IsAtEnd())return;
+	if (RankSequence.IsAtEnd())
+	{
+		BackButton->SetVisibility(EVisibility::Visible);
+		BackButton->SetEnabled(true);
+		return;
+	}
+
 	FChildren* RankChildren = RankContainer->GetChildren();
 
 	for (int32 i = 0; i < RankAnims.Num(); ++i)
@@ -259,7 +301,11 @@ void SMainMenuWidget::ShowRank()
 void SMainMenuWidget::BackToMenu()
 {
 	if (RankSequence.IsAtEnd())
+	{
 		RankSequence.Reverse();
+		BackButton->SetVisibility(EVisibility::Hidden);
+		BackButton->SetEnabled(false);
+	}
 }
 
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION

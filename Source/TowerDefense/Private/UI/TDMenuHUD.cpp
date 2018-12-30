@@ -18,10 +18,12 @@ void ATDMenuHUD::DrawHUD()
 {
 	if (!MainMenu.IsValid() && GEngine)
 	{
-		FSimpleDelegate OnPressed;
+		FSimpleDelegate OnPressed, OnQuit;
 		OnPressed.BindUObject(this, &ATDMenuHUD::LaunchGame);
+		OnQuit.BindUObject(this, &ATDMenuHUD::QuitGame);
 		SAssignNew(MainMenu, SMainMenuWidget)
-			.OnPressed(OnPressed);
+			.OnStart(OnPressed)
+			.OnQuit(OnQuit);
 
 		GEngine->GameViewport->AddViewportWidgetContent(
 			SNew(SWeakWidget)
@@ -37,4 +39,13 @@ void ATDMenuHUD::LaunchGame()
 {
 	if (GetWorld())
 		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"));
+}
+
+void ATDMenuHUD::QuitGame()
+{
+	if (GetWorld())
+	{
+		if (APlayerController* MC = GetWorld()->GetFirstPlayerController())
+			MC->ConsoleCommand("quit");
+	}
 }

@@ -15,7 +15,8 @@ class SMainMenuWidget : public SCompoundWidget
 public:
 	SLATE_BEGIN_ARGS(SMainMenuWidget)
 	{}
-	SLATE_ARGUMENT(FSimpleDelegate, OnPressed)
+	SLATE_ARGUMENT(FSimpleDelegate, OnStart)
+	SLATE_ARGUMENT(FSimpleDelegate, OnQuit)
 	SLATE_END_ARGS()
 
 	/** Constructs this widget with InArgs */
@@ -33,7 +34,7 @@ private:
 private:
 	TSharedPtr<SVerticalBox> RankContainer;
 
-	TSharedPtr<SButton> BackButton;
+	TSharedPtr<SBorder> BackButton;
 
 	TArray<FCurveHandle> RankAnims;
 

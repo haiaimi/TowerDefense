@@ -20,6 +20,8 @@ public:
 	virtual void DrawHUD()override;
 
 	void LaunchGame();
+
+	void QuitGame();
 	
 private:
 	TSharedPtr<class SMainMenuWidget> MainMenu;
