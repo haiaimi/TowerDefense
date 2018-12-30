@@ -5,6 +5,12 @@
 #include <UObjectGlobals.h>
 #include <Engine/Texture2D.h>
 #include "SBackgroundBlur.h"
+#include <Kismet/GameplayStatics.h>
+#include "ScoreSaveGame.h"
+#include "HAIAIMIHelper.h"
+
+static TArray<FString> RankString = { FString(TEXT("第一名")),FString(TEXT("第二名")),FString(TEXT("第三名")),FString(TEXT("第四名")),FString(TEXT("第五名")),
+									  FString(TEXT("第六名")),FString(TEXT("第七名")),FString(TEXT("第八名")),FString(TEXT("第九名")),FString(TEXT("第十名")) };
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SMainMenuWidget::Construct(const FArguments& InArgs)
@@ -23,6 +29,8 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	BackButtonBrush->DrawAs = ESlateBrushDrawType::Box;
 	BackButtonBrush->Margin = FMargin(0.25);
 
+	const TArray<uint32> CurScores = HAIAIMIHelper::LoadScores();
+
 	TAttribute<FMargin>::FGetter MenuPaddingGetter;
 	TAttribute<FMargin> MenuPadding;
 	MenuPaddingGetter.BindLambda([&]() {
@@ -35,8 +43,8 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	TAttribute<float>::FGetter BlurGetter;
 	TAttribute<float> BlurStrength;
 	BlurGetter.BindLambda([&]() {
-		const float CurLerp = RankAnims[0].GetLerp();
-		return 5.f*CurLerp;
+		const float CurLerp = BlurAnim.GetLerp();
+		return 3.f*CurLerp;
 		});
 
 	BlurStrength.Bind(BlurGetter);
@@ -244,15 +252,28 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 			.RenderTransformPivot(FVector2D(0.5f,0.5f))
 			[
 				SNew(SBox)
-				.HAlign(EHorizontalAlignment::HAlign_Center)
-				.VAlign(EVerticalAlignment::VAlign_Center)
 				.HeightOverride(80.f)
 				.WidthOverride(700.f)
 				[
-					SNew(STextBlock)
-					.Text(FText::FromString(FString(TEXT("111111111"))))
-					.Font(FSlateFontInfo("Roboto",34))
-					.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
+					SNew(SHorizontalBox)
+					+SHorizontalBox::Slot()
+					.HAlign(EHorizontalAlignment::HAlign_Center)
+					.VAlign(EVerticalAlignment::VAlign_Center)
+					[
+						SNew(STextBlock)
+						.Text(FText::FromString(RankString[i]))
+						.Font(FSlateFontInfo("Roboto",32))
+						.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
+					]
+					+SHorizontalBox::Slot()
+					.HAlign(EHorizontalAlignment::HAlign_Center)
+					.VAlign(EVerticalAlignment::VAlign_Center)
+					[
+						SNew(STextBlock)
+						.Text(FText::FromString(FString::FormatAsNumber(CurScores[i])))
+						.Font(FSlateFontInfo("Roboto",32))
+						.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
+					]
 				]
 			]
 		];
@@ -284,12 +305,13 @@ void SMainMenuWidget::Tick(const FGeometry& AllottedGeometry, const double InCur
 void SMainMenuWidget::SetupAnimation()
 {
 	RankSequence = FCurveSequence();
-	float StartTime = 0.f;
 
 	for (int32 i = 0; i < 11; ++i)
 	{
 		RankAnims[i] = RankSequence.AddCurve(i * 0.04f, 0.3f, ECurveEaseFunction::Linear);
 	}
+
+	BlurAnim = RankSequence.AddCurve(0.f, 0.6f, ECurveEaseFunction::Linear);
 }
 
 void SMainMenuWidget::ShowRank()

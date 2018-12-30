@@ -44,6 +44,8 @@ void ATDController::BeginPlay()
 	{
 		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
 	}
+
+	HAIAIMIHelper::SaveScore();
 }
 
 void ATDController::SetupInputComponent()

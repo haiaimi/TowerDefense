@@ -19,4 +19,8 @@ public:
 	static float AdaptAngle(const float InAngle);
 
 	static FVector2D ConvertToNormalCoord(FVector2D Pos);
+
+	static void SaveScore();
+
+	static TArray<uint32> LoadScores();
 };

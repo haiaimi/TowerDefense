@@ -4,6 +4,8 @@
 #include "TowerDefense.h"
 #include <Engine/Engine.h>
 #include <Engine/GameViewportClient.h>
+#include <Kismet/GameplayStatics.h>
+#include "ScoreSaveGame.h"
 
 
 void HAIAIMIHelper::Debug_ScreenMessage(FString&& InString, float ShowTime, FColor FontColor)
@@ -47,5 +49,32 @@ FVector2D HAIAIMIHelper::ConvertToNormalCoord(FVector2D Pos)
 		Res.Y = Pos.Y * 1080.f / Size.Y;
 	}
 	
+	return Res;
+}
+
+void HAIAIMIHelper::SaveScore()
+{
+	UScoreSaveGame* CurSaveGame = NewObject<UScoreSaveGame>();
+	CurSaveGame->AllScores.SetNum(10);
+	for (int32 i = 0; i < 10; ++i)
+	{
+		CurSaveGame->AllScores[i] = 11000 - 400 * i;
+	}
+	UGameplayStatics::SaveGameToSlot(CurSaveGame, TEXT("AllScores"), 0);
+}
+
+TArray<uint32>  HAIAIMIHelper::LoadScores()
+{
+	TArray<uint32> Res;
+	Res.Init(0, 10);
+	if (USaveGame* Scores = UGameplayStatics::LoadGameFromSlot(TEXT("AllScores"), 0))
+	{
+		UScoreSaveGame* MyScores = Cast<UScoreSaveGame>(Scores);
+		if (MyScores->AllScores.Num() == 0)
+			return Res;
+		else
+			return MyScores->AllScores;
+	}
+
 	return Res;
 }

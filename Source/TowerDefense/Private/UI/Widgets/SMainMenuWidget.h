@@ -38,5 +38,7 @@ private:
 
 	TArray<FCurveHandle> RankAnims;
 
+	FCurveHandle BlurAnim;
+
 	FCurveSequence RankSequence;
 };
