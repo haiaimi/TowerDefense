@@ -30,6 +30,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class ATDTowerBase> BaseTower;
 
+	/**用于检测敌人出去*/
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UBoxComponent* OutDetection;
+
 	/**所有炮台的类型*/
 	TArray<ETowerType::Type> AllTowerType;
 	
@@ -48,4 +52,8 @@ public:
 	void SpawnEnemy();
 	
 	void UpdateTowerType(ETowerType::Type InType, int32 Index);
+
+private:
+	UFUNCTION()
+	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 };

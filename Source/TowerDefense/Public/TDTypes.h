@@ -11,6 +11,7 @@
 #define COLLISION_MISSLE            ECollisionChannel::ECC_GameTraceChannel4
 #define COLLISION_ENEMYBULLET       ECollisionChannel::ECC_GameTraceChannel5
 #define COLLISION_EXPLOSION         ECollisionChannel::ECC_GameTraceChannel6
+#define COLLISION_DETECTBOX         ECollisionChannel::ECC_GameTraceChannel7
 
 UENUM(BlueprintType)
 namespace ETowerType

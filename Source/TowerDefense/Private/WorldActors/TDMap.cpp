@@ -6,6 +6,9 @@
 #include "TDEnemy.h"
 #include <Engine/Engine.h>
 #include "TDTowerBase.h"
+#include <Components/BoxComponent.h>
+#include "TDController.h"
+#include "HAIAIMIHelper.h"
 
 
 // Sets default values
@@ -16,7 +19,12 @@ ATDMap::ATDMap()
 
 	Map = CreateDefaultSubobject<UPaperTileMapComponent>(TEXT("Map"));
 	RouteLine = CreateDefaultSubobject<USplineComponent>(TEXT("RouteLine"));
+	OutDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("OutDetection"));
 
+	OutDetection->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	OutDetection->SetCollisionObjectType(COLLISION_DETECTBOX);
+	OutDetection->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	OutDetection->OnComponentBeginOverlap.AddDynamic(this, &ATDMap::OnBoxBeginOverlap);
 	Map->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
@@ -34,6 +42,10 @@ void ATDMap::BeginPlay()
 		ATDTowerBase* Tmp = GetWorld()->SpawnActor<ATDTowerBase>(BaseTower, FTransform(FRotator::ZeroRotator, BuildPoints[i] + FVector(0.f, 10.f, 0.f)), SpawnParameter);
 		Tmp->InMapIndex = i;
 	}
+
+	FTransform BoxTransform = RouteLine->GetTransformAtDistanceAlongSpline(RouteLine->GetSplineLength(), ESplineCoordinateSpace::World);
+	OutDetection->SetWorldTransform(BoxTransform);
+	OutDetection->SetBoxExtent(FVector(50.f, 50.f, 50.f));
 }
 
 // Called every frame
@@ -51,5 +63,18 @@ void ATDMap::SpawnEnemy()
 void ATDMap::UpdateTowerType(ETowerType::Type InType, int32 Index)
 {
 	AllTowerType[Index] = InType;
+}
+
+void ATDMap::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	HAIAIMIHelper::Debug_ScreenMessage(TEXT("Box Overlap"));
+	if (ATDEnemy* Enemy = Cast<ATDEnemy>(OtherActor))
+	{
+		if (ATDController* MC = Cast<ATDController>(GetOwner()))
+		{
+			MC->AddScore(-100);
+			Enemy->Destroy();
+		}
+	}
 }
 

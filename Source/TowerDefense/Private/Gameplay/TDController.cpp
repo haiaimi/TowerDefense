@@ -42,7 +42,9 @@ void ATDController::BeginPlay()
 	
 	if (!CurMap && DefaultMap)  //如果不存在map就新生成一个
 	{
-		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector));
+		FActorSpawnParameters SpawnParameter;
+		SpawnParameter.Owner = this;
+		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector), SpawnParameter);
 	}
 
 	HAIAIMIHelper::SaveScore();
@@ -98,6 +100,11 @@ void ATDController::DetectMap()
 void ATDController::AddScore(int32 AddedScore)
 {
 	CurScore += AddedScore;
+	if (CurScore < 0)
+	{
+		Pause();
+		return;
+	}
 	if (ATDHUD* CurHUD = Cast<ATDHUD>(GetHUD()))
 	{
 		TSharedPtr<class SScoreWidget> ScoreWidget = CurHUD->GetScoreWidget();

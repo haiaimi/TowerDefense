@@ -34,6 +34,7 @@ ATDEnemy::ATDEnemy() :
 	EnemyCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	//EnemyCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	EnemyCollision->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Block);
+	EnemyCollision->SetCollisionResponseToChannel(COLLISION_DETECTBOX, ECollisionResponse::ECR_Overlap);
 	EnemySprite->TranslucencySortPriority = 1;
 }
 
