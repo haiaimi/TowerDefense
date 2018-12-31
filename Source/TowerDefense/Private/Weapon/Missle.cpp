@@ -18,14 +18,11 @@ AMissle::AMissle()
 	ProjectileComponent->InitialSpeed = 0.f;   
 	ProjectileComponent->MaxSpeed = 600.f;
 	ProjectileComponent->Velocity = FVector(0.f, 0.f, 1.f);
-	//ProjectileCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	BulletFire->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	ProjectileCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	ProjectileCollision->SetCollisionObjectType(COLLISION_MISSLE);
-	ProjectileCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_TOWER, ECollisionResponse::ECR_Ignore);
-	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_EXPLOSION, ECollisionResponse::ECR_Ignore);
-	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Ignore);
-	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_ENEMYBULLET, ECollisionResponse::ECR_Ignore);
-	ProjectileSprite->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Ignore);
+	ProjectileCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	ProjectileCollision->SetCollisionResponseToChannel(COLLISION_ENEMY, ECollisionResponse::ECR_Block);
 	
 	BulletFire->TranslucencySortPriority = 4;
 	Damage = 100.f;
