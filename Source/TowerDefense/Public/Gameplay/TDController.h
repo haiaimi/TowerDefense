@@ -24,6 +24,8 @@ public:
 	TSubclassOf<class ATDTowerBase> Tower1;
 
 private:
+	int32 CurMoney;
+
 	int32 CurScore;
 
 	TSharedPtr<class STowerSelectWidget> TowerWidget;
@@ -42,9 +44,13 @@ public:
 	/**点击事件检测地图*/
 	void DetectMap();
 
-	void AddScore(int32 AddedScore);
+	void AddMoney(int32 AddedMoney);
 
-	int32 GetPlayerScore() { return CurScore; }
+	void AddScore(int32 AddedScore) { CurScore += AddedScore; };
+
+	int32 GetPlayerMoney() { return CurMoney; }
+
+	uint32 GetPlayerScore() { return CurScore; }
 
 	int32 GetSpecifiedTowerCost(int32 Index);
 

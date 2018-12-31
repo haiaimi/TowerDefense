@@ -76,26 +76,23 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		[
 			SNew(SVerticalBox)
 			+SVerticalBox::Slot()
+			.HAlign(EHorizontalAlignment::HAlign_Center)
+			.VAlign(EVerticalAlignment::VAlign_Center)
 			[
 				SNew(SBorder)
 				.BorderImage(BorderBrush)
 				[
 					SNew(SBox)
-					.HeightOverride(100.f)
-					.WidthOverride(280.f)
+					.HeightOverride(80.f)
+					.WidthOverride(200.f)
+					.HAlign(EHorizontalAlignment::HAlign_Center)
+					.VAlign(EVerticalAlignment::VAlign_Center)
 					[
-						SNew(SButton)
-						.HAlign(EHorizontalAlignment::HAlign_Center)
-						.VAlign(EVerticalAlignment::VAlign_Center)
-						.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
-						.OnPressed(this, &SMainMenuWidget::BackToMenu)
-						.IsEnabled(false)
-						[
-							SNew(STextBlock)
-							.Text(FText::FromString(FString(TEXT("继续游戏"))))
-							.Font(FSlateFontInfo("Roboto",34))
-							.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
-						]
+						SNew(STextBlock)
+						.Text(FText::FromString(FString(TEXT("主菜单"))))
+						.Font(FSlateFontInfo("Roboto",30))
+						.ColorAndOpacity(FSlateColor(FLinearColor(0.f,0.f,0.f,1.f)))
+						
 					]
 				]
 			]

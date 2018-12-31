@@ -85,7 +85,10 @@ float ATDEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		TraceTransform.SetRotation(FQuat(FRotator(FMath::Rand() % 360, 0.f, 0.f)));
 		GetWorld()->SpawnActor<AExplosionEffect>(DeathTrace, TraceTransform);
 		if (ATDController* CurController = Cast<ATDController>(GetWorld()->GetFirstPlayerController()))
-			CurController->AddScore(Bonus);
+		{
+			CurController->AddScore(Bonus * 2);
+			CurController->AddMoney(Bonus);
+		}
 		Destroy();
 	}
 

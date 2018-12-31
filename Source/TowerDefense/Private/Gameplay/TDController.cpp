@@ -18,7 +18,8 @@
 
 ATDController::ATDController() :
 	CurMap(nullptr),
-	CurScore(1000),
+	CurMoney(1000),
+	CurScore(0),
 	TowerWidget(nullptr),
 	PauseWidget(nullptr)
 {
@@ -50,8 +51,6 @@ void ATDController::BeginPlay()
 		SpawnParameter.Owner = this;
 		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector), SpawnParameter);
 	}
-
-	HAIAIMIHelper::SaveScore();
 }
 
 void ATDController::SetupInputComponent()
@@ -102,19 +101,21 @@ void ATDController::DetectMap()
 	}
 }
 
-void ATDController::AddScore(int32 AddedScore)
+void ATDController::AddMoney(int32 AddedMoney)
 {
-	CurScore += AddedScore;
-	if (CurScore < 0)
+	CurMoney += AddedMoney;
+	
+	if (CurMoney < 0)
 	{
 		SetPause(true);
+		HAIAIMIHelper::SaveScore(CurScore);
 		return;
 	}
 	if (ATDHUD* CurHUD = Cast<ATDHUD>(GetHUD()))
 	{
 		TSharedPtr<class SScoreWidget> ScoreWidget = CurHUD->GetScoreWidget();
 		if (ScoreWidget.IsValid())
-			ScoreWidget->AddScore(AddedScore);
+			ScoreWidget->AddScore(AddedMoney);
 	}
 }
 
@@ -125,16 +126,16 @@ int32 ATDController::GetSpecifiedTowerCost(int32 Index)
 
 bool ATDController::SpawnTower(const int32 TowerIndex, ATDTowerBase* BaseTower)
 {
-	HAIAIMIHelper::Debug_ScreenMessage(FString::FormatAsNumber(CurScore));
+	HAIAIMIHelper::Debug_ScreenMessage(FString::FormatAsNumber(CurMoney));
 	int32 BuildCost = Tower1.GetDefaultObject()->GetBuildCost();
-	if (BuildCost > CurScore)return false;
+	if (BuildCost > CurMoney)return false;
 	if (!GetWorld())return false;
 	ATDTowerBase* SpawnedTower = GetWorld()->SpawnActorDeferred<ATDTowerBase>(Tower1, BaseTower->GetTransform(), BaseTower->GetOwner());
 	if (SpawnedTower)
 	{
 		SpawnedTower->InMapIndex = BaseTower->InMapIndex;
 		UGameplayStatics::FinishSpawningActor(SpawnedTower, BaseTower->GetTransform());
-		AddScore(-BuildCost);
+		AddMoney(-BuildCost);
 		BaseTower->Destroy();
 	}
 
@@ -157,6 +158,7 @@ bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCa
 			BackMenuDelgate.BindLambda([&]() {
 				if (GetWorld())
 					GetWorld()->ServerTravel(TEXT("/Game/Levels/Menu"));
+				HAIAIMIHelper::SaveScore(CurScore);
 				});
 
 			SAssignNew(PauseWidget, SPauseMenuWidget)

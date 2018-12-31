@@ -84,7 +84,6 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 
 			if (!RepairWidget.IsValid() && GEngine)
 			{
-				OnInjured();
 				SAssignNew(RepairWidget, SRepairWidget)
 					.SpawnPos(HAIAIMIHelper::ConvertToNormalCoord(ScreenLocation))
 					.TowerBase(this);
@@ -95,6 +94,7 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 					0
 				);
 			}
+			OnInjured();
 		}
 	}
 

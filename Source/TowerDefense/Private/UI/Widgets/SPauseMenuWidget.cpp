@@ -7,6 +7,7 @@
 #include "TDController.h"
 #include <Engine/World.h>
 #include <Engine/Engine.h>
+#include "HAIAIMIHelper.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SPauseMenuWidget::Construct(const FArguments& InArgs)
@@ -139,7 +140,10 @@ void SPauseMenuWidget::ContinueGame()
 void SPauseMenuWidget::QuitGame()
 {
 	if (OwnerController.IsValid())
+	{
+		HAIAIMIHelper::SaveScore(OwnerController->GetPlayerScore());
 		OwnerController->ConsoleCommand("quit");
+	}
 }
 
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION

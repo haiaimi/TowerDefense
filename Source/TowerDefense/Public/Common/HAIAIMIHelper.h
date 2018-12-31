@@ -20,7 +20,7 @@ public:
 
 	static FVector2D ConvertToNormalCoord(FVector2D Pos);
 
-	static void SaveScore();
+	static void SaveScore(uint32 newScore);
 
 	static TArray<uint32> LoadScores();
 };

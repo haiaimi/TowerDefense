@@ -52,13 +52,20 @@ FVector2D HAIAIMIHelper::ConvertToNormalCoord(FVector2D Pos)
 	return Res;
 }
 
-void HAIAIMIHelper::SaveScore()
+void HAIAIMIHelper::SaveScore(uint32 newScore)
 {
 	UScoreSaveGame* CurSaveGame = NewObject<UScoreSaveGame>();
-	CurSaveGame->AllScores.SetNum(10);
+	CurSaveGame->AllScores = HAIAIMIHelper::LoadScores();
+	TArray<uint32>& Temp = CurSaveGame->AllScores;
+
 	for (int32 i = 0; i < 10; ++i)
 	{
-		CurSaveGame->AllScores[i] = 11000 - 400 * i;
+		if (newScore > Temp[i])
+		{
+			Temp.Insert(newScore, i);
+			Temp.SetNum(10);
+			break;
+		}
 	}
 	UGameplayStatics::SaveGameToSlot(CurSaveGame, TEXT("AllScores"), 0);
 }

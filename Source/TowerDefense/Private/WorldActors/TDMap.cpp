@@ -72,7 +72,7 @@ void ATDMap::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	{
 		if (ATDController* MC = Cast<ATDController>(GetOwner()))
 		{
-			MC->AddScore(-100);
+			MC->AddMoney(-100);
 			Enemy->Destroy();
 		}
 	}
