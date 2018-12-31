@@ -12,11 +12,15 @@
 #include "../UI/Widgets/SScoreWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "../UI/Widgets/STowerSelectWidget.h"
+#include "SPauseMenuWidget.h"
+#include <Engine/World.h>
+#include <GameFramework/GameModeBase.h>
 
 ATDController::ATDController() :
 	CurMap(nullptr),
 	CurScore(1000),
-	TowerWidget(nullptr)
+	TowerWidget(nullptr),
+	PauseWidget(nullptr)
 {
 	static ConstructorHelpers::FClassFinder<ATDMap> DefaultMapFinder(TEXT("/Game/Blueprint/maps/map1"));
 	static ConstructorHelpers::FClassFinder<ATDTowerBase> TowerFinder(TEXT("/Game/Blueprint/Weapon/Tower2Missle"));
@@ -56,6 +60,7 @@ void ATDController::SetupInputComponent()
 
 	InputComponent->BindAction("SpawnEnemy", IE_Pressed, this, &ATDController::SpawnEnemy);
 	InputComponent->BindAction("ClickMap", IE_Pressed, this, &ATDController::DetectMap);
+	InputComponent->BindAction("PauseGame", IE_Pressed, this, &ATDController::PauseGame);
 }
 
 void ATDController::SpawnEnemy()
@@ -102,7 +107,7 @@ void ATDController::AddScore(int32 AddedScore)
 	CurScore += AddedScore;
 	if (CurScore < 0)
 	{
-		Pause();
+		SetPause(true);
 		return;
 	}
 	if (ATDHUD* CurHUD = Cast<ATDHUD>(GetHUD()))
@@ -140,4 +145,47 @@ void ATDController::ResetSelectWidget()
 {
 	if (TowerWidget.IsValid())
 		TowerWidget.Reset();
+}
+
+bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCanUnpause()*/)
+{
+	if (bPause)
+	{
+		if (!PauseWidget.IsValid())
+		{
+			FSimpleDelegate BackMenuDelgate;
+			BackMenuDelgate.BindLambda([&]() {
+				if (GetWorld())
+					GetWorld()->ServerTravel(TEXT("/Game/Levels/Menu"));
+				});
+
+			SAssignNew(PauseWidget, SPauseMenuWidget)
+				.OwnerController(this)
+				.BackDelegate(BackMenuDelgate);
+
+			GEngine->GameViewport->AddViewportWidgetContent(
+				SNew(SWeakWidget)
+				.PossiblyNullContent(PauseWidget.ToSharedRef()),
+				0
+			);
+		}
+		else
+		{
+			PauseWidget->SetVisibility(EVisibility::Visible);
+			PauseWidget->SetEnabled(true);
+		}
+	}
+	else
+	{
+		PauseWidget->SetVisibility(EVisibility::Hidden);
+			PauseWidget->SetEnabled(false);
+	}
+	
+	return Super::SetPause(bPause);
+}
+
+void ATDController::RestartGame()
+{
+	if (GetWorld())
+		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"));
 }

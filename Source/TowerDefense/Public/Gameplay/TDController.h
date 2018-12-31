@@ -28,6 +28,8 @@ private:
 
 	TSharedPtr<class STowerSelectWidget> TowerWidget;
 
+	TSharedPtr<class SPauseMenuWidget> PauseWidget;
+
 public:
 	ATDController();
 
@@ -50,4 +52,11 @@ public:
 
 	/**重置选择TowerUI*/
 	void ResetSelectWidget();
+
+	virtual bool SetPause(bool bPause, FCanUnpause CanUnpauseDelegate = FCanUnpause())override;
+
+	void RestartGame();
+
+private:
+	void PauseGame() { SetPause(true); }
 };

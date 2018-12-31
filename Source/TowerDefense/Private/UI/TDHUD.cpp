@@ -7,11 +7,12 @@
 #include "Widgets/SScoreWidget.h"
 #include "Widgets/STowerSelectWidget.h"
 #include "Widgets/SRepairWidget.h"
+#include "SPauseMenuWidget.h"
 
 
 ATDHUD::ATDHUD() :
 	ScoreWidget(NULL),
-	RepairWidget(NULL)
+	PauseWidget(NULL)
 {
 
 }
@@ -37,13 +38,13 @@ void ATDHUD::DrawHUD()
 		}
 	}
 
-	/*if (!RepairWidget.IsValid() && GEngine)
+	/*if (!PauseWidget.IsValid() && GEngine)
 	{
-		SAssignNew(RepairWidget, SRepairWidget);
+		SAssignNew(PauseWidget, SPauseMenuWidget);
 
 		GEngine->GameViewport->AddViewportWidgetContent(
 			SNew(SWeakWidget)
-			.PossiblyNullContent(RepairWidget.ToSharedRef()),
+			.PossiblyNullContent(PauseWidget.ToSharedRef()),
 			0
 		);
 	}*/

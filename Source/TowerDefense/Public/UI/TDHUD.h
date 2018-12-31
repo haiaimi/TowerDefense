@@ -29,5 +29,5 @@ public:
 private:
 	TSharedPtr<class SScoreWidget> ScoreWidget;
 
-	TSharedPtr<class SRepairWidget> RepairWidget;
+	TSharedPtr<class SPauseMenuWidget> PauseWidget;
 };
