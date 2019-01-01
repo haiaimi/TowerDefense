@@ -16,6 +16,7 @@
 #include <Engine/World.h>
 #include <GameFramework/GameModeBase.h>
 #include "../UI/Widgets/SRepairWidget.h"
+#include "TDPlayerCameraManager.h"
 
 ATDController::ATDController() :
 	CurMap(nullptr),
@@ -24,12 +25,15 @@ ATDController::ATDController() :
 	TowerWidget(nullptr),
 	PauseWidget(nullptr)
 {
+	PrimaryActorTick.bCanEverTick = true;
 	static ConstructorHelpers::FClassFinder<ATDMap> DefaultMapFinder(TEXT("/Game/Blueprint/maps/map1"));
 	static ConstructorHelpers::FClassFinder<ATDTowerBase> TowerFinder(TEXT("/Game/Blueprint/Weapon/Tower2Missle"));
 	if (DefaultMapFinder.Succeeded())
 		DefaultMap = DefaultMapFinder.Class;
 	if (TowerFinder.Succeeded())
 		Tower1 = TowerFinder.Class;
+
+	PlayerCameraManagerClass = ATDPlayerCameraManager::StaticClass();
 }
 
 void ATDController::BeginPlay()
@@ -51,6 +55,18 @@ void ATDController::BeginPlay()
 		FActorSpawnParameters SpawnParameter;
 		SpawnParameter.Owner = this;
 		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector), SpawnParameter);
+	}
+}
+
+void ATDController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (GetPawn())
+	{
+		GetPawn()->SetActorLocation(FVector(590.f, 1300.f, -590.f));
+		GetPawn()->DisableInput(this);
+
+		HAIAIMIHelper::Debug_ScreenMessage(GetPawn()->GetActorRotation().ToString());
 	}
 }
 
@@ -199,5 +215,12 @@ bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCa
 void ATDController::RestartGame()
 {
 	if (GetWorld())
+	{
+		//这里要提前删除，否则游戏会崩溃
+		for (TActorIterator<ATDTowerBase> Iter(GetWorld()); Iter; ++Iter)
+		{
+			(*Iter)->Destroy();
+		}
 		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"), false, true);
+	}
 }

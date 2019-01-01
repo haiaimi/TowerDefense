@@ -37,6 +37,8 @@ public:
 
 	void BeginPlay()override;
 
+	virtual void Tick(float DeltaTime)override;
+
 	virtual void SetupInputComponent()override;
 
 	void SpawnEnemy();

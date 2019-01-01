@@ -45,6 +45,7 @@ void ATDTower2Missle::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	const FTransform NearPoint = GetNearestEnemy();
+	if (NearPoint.GetLocation().Size() == 0.f)return;
 	FVector Dir = (NearPoint.GetLocation() - GetActorLocation()).GetSafeNormal();
 	FVector LDir = -FRotationMatrix(TowerBarrel->GetComponentRotation()).GetUnitAxis(EAxis::X);
 	Dir.Y = 0.f;

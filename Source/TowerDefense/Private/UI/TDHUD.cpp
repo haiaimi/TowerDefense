@@ -14,7 +14,6 @@ ATDHUD::ATDHUD() :
 	ScoreWidget(NULL),
 	PauseWidget(NULL)
 {
-
 }
 
 void ATDHUD::DrawHUD()
