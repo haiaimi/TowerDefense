@@ -84,6 +84,7 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 
 			if (!RepairWidget.IsValid() && GEngine)
 			{
+				HAIAIMIHelper::Debug_ScreenMessage(TEXT("Repair UI"));
 				SAssignNew(RepairWidget, SRepairWidget)
 					.SpawnPos(HAIAIMIHelper::ConvertToNormalCoord(ScreenLocation))
 					.TowerBase(this);
@@ -134,10 +135,14 @@ void ATDTowerBase::HealSelf()
 	GetWorld()->GetTimerManager().SetTimer(HealTimer, this, &ATDTowerBase::HealSelf, 1.f, false);
 
 	Health += 50.f;
-	if (Health / MaxHealth > 1.f)
+	if (Health / MaxHealth >= 1.f)
 	{
+		Health = MaxHealth;
 		GetWorld()->GetTimerManager().ClearTimer(InjuredTimer);
 		GetWorld()->GetTimerManager().ValidateHandle(InjuredTimer);
+
+		GetWorld()->GetTimerManager().ClearTimer(HealTimer);
+		GetWorld()->GetTimerManager().ValidateHandle(HealTimer);
 
 		if (RepairWidget.IsValid())
 			RepairWidget.Reset();

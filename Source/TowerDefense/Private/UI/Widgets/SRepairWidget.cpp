@@ -66,6 +66,7 @@ FReply SRepairWidget::OnButtonClicked()
 	if (TowerBase)
 		TowerBase->HealSelf();
 	bInRepair = true;
+	RepairButton->SetEnabled(false);
 	
 	return FReply::Handled();
 }

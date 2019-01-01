@@ -17,7 +17,8 @@
 
 ATDTower2Missle::ATDTower2Missle() :
 	FireInterval(1.f),
-	TowerBarrelPitch(0.f)
+	TowerBarrelPitch(0.f),
+	TowerBarrel(nullptr)
 {
 	TowerBarrel = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TowerBarrel"));
 	TowerBarrel->SetupAttachment(TowerSprite);
@@ -68,7 +69,7 @@ void ATDTower2Missle::Reload()
 {
 	int32 MissleIndex = 1;
 	FString SocketName = FString("Missle") + FString::FormatAsNumber(MissleIndex);
-	while (TowerBarrel->DoesSocketExist(*SocketName))
+	while (TowerBarrel && TowerBarrel->DoesSocketExist(*SocketName))
 	{
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.Owner = this;

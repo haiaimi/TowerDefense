@@ -38,7 +38,7 @@ void ATDMenuHUD::DrawHUD()
 void ATDMenuHUD::LaunchGame()
 {
 	if (GetWorld())
-		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"));
+		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"), false, true);
 }
 
 void ATDMenuHUD::QuitGame()

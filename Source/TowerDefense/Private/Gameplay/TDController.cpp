@@ -157,7 +157,9 @@ bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCa
 			FSimpleDelegate BackMenuDelgate;
 			BackMenuDelgate.BindLambda([&]() {
 				if (GetWorld())
-					GetWorld()->ServerTravel(TEXT("/Game/Levels/Menu"));
+				{
+					GetWorld()->ServerTravel(TEXT("/Game/Levels/Menu"), false, true);
+				}
 				HAIAIMIHelper::SaveScore(CurScore);
 				});
 
@@ -197,5 +199,5 @@ bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCa
 void ATDController::RestartGame()
 {
 	if (GetWorld())
-		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"));
+		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"), false, true);
 }
