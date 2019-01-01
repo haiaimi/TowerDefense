@@ -44,7 +44,7 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 					.HeightOverride(100.f)
 					.WidthOverride(400.f)
 					[
-						SNew(SButton)
+						SAssignNew(ContinueButton, SButton)
 						.HAlign(EHorizontalAlignment::HAlign_Center)
 						.VAlign(EVerticalAlignment::VAlign_Center)
 						.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
@@ -131,6 +131,12 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 	];
 	
 }
+
+void SPauseMenuWidget::SetContinueButtonEnable(bool bEnabled)
+{
+	ContinueButton->SetEnabled(bEnabled);
+}
+
 void SPauseMenuWidget::ContinueGame()
 {
 	if (OwnerController.IsValid())

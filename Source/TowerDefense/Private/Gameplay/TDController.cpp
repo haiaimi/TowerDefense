@@ -15,6 +15,7 @@
 #include "SPauseMenuWidget.h"
 #include <Engine/World.h>
 #include <GameFramework/GameModeBase.h>
+#include "../UI/Widgets/SRepairWidget.h"
 
 ATDController::ATDController() :
 	CurMap(nullptr),
@@ -65,8 +66,6 @@ void ATDController::SetupInputComponent()
 void ATDController::SpawnEnemy()
 {
 	CurMap->SpawnEnemy();
-
-	//GetWorld()->ServerTravel("/Game/Levels/Menu");
 }
 
 void ATDController::DetectMap()
@@ -108,6 +107,7 @@ void ATDController::AddMoney(int32 AddedMoney)
 	if (CurMoney < 0)
 	{
 		SetPause(true);
+		PauseWidget->SetContinueButtonEnable(false);
 		HAIAIMIHelper::SaveScore(CurScore);
 		return;
 	}
@@ -181,6 +181,14 @@ bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCa
 	{
 		PauseWidget->SetVisibility(EVisibility::Hidden);
 			PauseWidget->SetEnabled(false);
+	}
+
+	for (TActorIterator<ATDTowerBase> Iter(GetWorld()); Iter; ++Iter)
+	{
+		if((*Iter)->RepairWidget.IsValid())
+		{
+			(*Iter)->RepairWidget->SetVisibility(bPause ? EVisibility::Hidden : EVisibility::Visible);
+		}
 	}
 	
 	return Super::SetPause(bPause);

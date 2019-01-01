@@ -21,6 +21,8 @@ public:
 	/** Constructs this widget with InArgs */
 	void Construct(const FArguments& InArgs);
 
+	void SetContinueButtonEnable(bool bEnabled);
+
 private:
 	void ContinueGame();
 
@@ -28,4 +30,6 @@ private:
 
 private:
 	TWeakObjectPtr<class ATDController> OwnerController;
+
+	TSharedPtr<SButton> ContinueButton;
 };

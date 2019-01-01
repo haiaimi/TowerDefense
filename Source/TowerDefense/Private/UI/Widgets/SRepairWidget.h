@@ -32,6 +32,7 @@ public:
 
 private:
 	bool bInRepair; 
+
 	const struct FRepairStyle* RepairStyle;
 
 	ATDTowerBase* TowerBase;
