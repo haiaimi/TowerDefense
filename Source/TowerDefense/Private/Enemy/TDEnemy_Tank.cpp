@@ -13,7 +13,6 @@
 #include "TDTypes.h"
 
 
-
 ATDEnemy_Tank::ATDEnemy_Tank() :
 	TowerIndex(0),
 	TankPitch(0.f)
@@ -57,9 +56,8 @@ void ATDEnemy_Tank::Tick(float DeltaTime)
 	const FVector LDir = FRotationMatrix(TankBarrel->GetComponentRotation()).GetUnitAxis(EAxis::Z);
 	const float DotRes = FVector::DotProduct(Dir, LDir);
 	
-	//HAIAIMIHelper::Debug_ScreenMessage(FString::Printf(TEXT("CurPitch: %.4f, NextPitch: %.4f"), TankBarrel->GetComponentRotation().Pitch, TankBarrel->GetComponentRotation().Pitch + (DotRes > 0 ? 40.f : -40.f)*DeltaTime));
 	TankPitch += (DotRes > 0 ? 40.f : -40.f)*DeltaTime;
-	TankBarrel->SetWorldRotation(FRotator(HAIAIMIHelper::AdaptAngle(TankPitch), 0.f, 0.f));
+	TankBarrel->SetWorldRotation(FRotator(TankPitch, 0.f, 0.f));
 }
 
 void ATDEnemy_Tank::Fire()
@@ -97,11 +95,11 @@ FVector ATDEnemy_Tank::GetNearestTower()
 	{
 		TArray<FVector>& Points = DestMap->BuildPoints;
 		TArray<ETowerType::Type>& AllTowerType = DestMap->AllTowerType;
-
 		float MinDistance = INT_MAX;
 		for (int32 i = 0; i < Points.Num(); ++i)
 		{
 			if (AllTowerType[i] == ETowerType::EBase)continue;
+			
 			float TmpDistance = (Points[i] - GetActorLocation()).Size();
 			if (TmpDistance < MinDistance)
 			{
@@ -109,6 +107,7 @@ FVector ATDEnemy_Tank::GetNearestTower()
 				MinDistance = TmpDistance;
 			}
 		}
+
 	} 
 
 	return ResultPoint;

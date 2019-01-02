@@ -32,4 +32,6 @@ private:
 	TWeakObjectPtr<class ATDController> OwnerController;
 
 	TSharedPtr<SButton> ContinueButton;
+
+	const struct FButtonStyle* ButtonStyle;
 };

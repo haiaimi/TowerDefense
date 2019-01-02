@@ -22,6 +22,7 @@ public:
 	SLATE_ARGUMENT(TWeakObjectPtr<ATDController>, CurController)
 	SLATE_ARGUMENT(FVector2D, StartPos)
 	SLATE_ARGUMENT(TWeakObjectPtr<ATDTowerBase>, CurBaseTower)
+	SLATE_ARGUMENT(float, RoatateAngle)
 	SLATE_END_ARGS()
 
 	/** Constructs this widget with InArgs */

@@ -75,7 +75,6 @@ void ATDTower2Missle::Reload()
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.Owner = this;
 		AMissle* TmpMissle = GetWorld()->SpawnActor<AMissle>(MissleType, TowerBarrel->GetSocketTransform(*SocketName), SpawnParameters);
-		HAIAIMIHelper::Debug_ScreenMessage(TmpMissle->GetOwner()->GetFName().ToString());
 		TmpMissle->AttachToComponent(TowerBarrel, FAttachmentTransformRules::KeepWorldTransform, *SocketName);
 		if (TmpMissle)Missles.Add(TmpMissle);
 		SocketName = FString("Missle") + FString::FormatAsNumber(++MissleIndex);

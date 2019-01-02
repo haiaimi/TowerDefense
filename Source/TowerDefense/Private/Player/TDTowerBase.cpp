@@ -72,7 +72,6 @@ void ATDTowerBase::Tick(float DeltaTime)
 
 float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
-	HAIAIMIHelper::Debug_ScreenMessage(TEXT("OnAttack"));
 	Health -= DamageAmount;
 	if (Health / MaxHealth < 1.f && GetWorld())
 	{
@@ -81,12 +80,12 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 		{
 			FVector2D ScreenLocation;
 			CurController->ProjectWorldLocationToScreen(GetActorLocation() + FVector(50.f, 0.f, 120.f), ScreenLocation);
+			ScreenLocation = HAIAIMIHelper::ConvertToNormalCoord(ScreenLocation);
 
 			if (!RepairWidget.IsValid() && GEngine)
 			{
-				HAIAIMIHelper::Debug_ScreenMessage(TEXT("Repair UI"));
 				SAssignNew(RepairWidget, SRepairWidget)
-					.SpawnPos(HAIAIMIHelper::ConvertToNormalCoord(ScreenLocation))
+					.SpawnPos(ScreenLocation)
 					.TowerBase(this);
 
 				GEngine->GameViewport->AddViewportWidgetContent(
@@ -121,7 +120,6 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 
 void ATDTowerBase::OnInjured()
 {
-	HAIAIMIHelper::Debug_ScreenMessage(TEXT("OnInjured"), 5.f);
 	GetWorld()->GetTimerManager().SetTimer(InjuredTimer, this, &ATDTowerBase::OnInjured, 2.f, false);
 
 	FTransform CurTransform = GetActorTransform();

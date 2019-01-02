@@ -67,7 +67,7 @@ void ATDMap::UpdateTowerType(ETowerType::Type InType, int32 Index)
 
 void ATDMap::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	HAIAIMIHelper::Debug_ScreenMessage(TEXT("Box Overlap"));
+	//HAIAIMIHelper::Debug_ScreenMessage(TEXT("Box Overlap"));
 	if (ATDEnemy* Enemy = Cast<ATDEnemy>(OtherActor))
 	{
 		if (ATDController* MC = Cast<ATDController>(GetOwner()))

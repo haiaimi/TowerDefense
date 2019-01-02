@@ -8,6 +8,8 @@
 #include <Engine/World.h>
 #include <Engine/Engine.h>
 #include "HAIAIMIHelper.h"
+#include <SlateTypes.h>
+#include "FTowerDefenseStyle.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SPauseMenuWidget::Construct(const FArguments& InArgs)
@@ -19,6 +21,7 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 	ButtonBrush->DrawAs = ESlateBrushDrawType::Box;
 	ButtonBrush->Margin = FMargin(0.25);
 
+	ButtonStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FButtonStyle>(TEXT("PauseMenuButtonStyle"));
 	FSimpleDelegate RestartDelegate;
 	RestartDelegate.BindUObject(OwnerController.Get(), &ATDController::RestartGame);
 
@@ -47,8 +50,8 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 						SAssignNew(ContinueButton, SButton)
 						.HAlign(EHorizontalAlignment::HAlign_Center)
 						.VAlign(EVerticalAlignment::VAlign_Center)
-						.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
 						.OnPressed(this, &SPauseMenuWidget::ContinueGame)
+						.ButtonStyle(ButtonStyle)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("继续游戏"))))
@@ -70,8 +73,8 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 							SNew(SButton)
 							.HAlign(EHorizontalAlignment::HAlign_Center)
 							.VAlign(EVerticalAlignment::VAlign_Center)
-							.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
 							.OnPressed(RestartDelegate)
+							.ButtonStyle(ButtonStyle)
 							[
 								SNew(STextBlock)
 								.Text(FText::FromString(FString(TEXT("重新开始"))))
@@ -93,8 +96,8 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 								SNew(SButton)
 								.HAlign(EHorizontalAlignment::HAlign_Center)
 								.VAlign(EVerticalAlignment::VAlign_Center)
-								.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
 								.OnPressed(InArgs._BackDelegate)
+								.ButtonStyle(ButtonStyle)
 								[
 									SNew(STextBlock)
 									.Text(FText::FromString(FString(TEXT("返回主菜单"))))
@@ -116,8 +119,8 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 							SNew(SButton)
 							.HAlign(EHorizontalAlignment::HAlign_Center)
 							.VAlign(EVerticalAlignment::VAlign_Center)
-							.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
 							.OnPressed(this, &SPauseMenuWidget::QuitGame)
+							.ButtonStyle(ButtonStyle)
 							[
 								SNew(STextBlock)
 								.Text(FText::FromString(FString(TEXT("退出游戏"))))

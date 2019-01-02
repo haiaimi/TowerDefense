@@ -30,13 +30,16 @@ void STowerSelectWidget::Construct(const FArguments& InArgs)
 	TArray<TAttribute<TOptional<FSlateRenderTransform>>> ButtonScales;
 	MoveAttribute.SetNum(3);
 	ButtonScales.SetNum(3);
+	const float RotateAngle = InArgs._RoatateAngle;
 	for (int32 i = 0; i < 3; ++i)
 	{
 		TAttribute<FMargin>::FGetter PaddingGetter;
 		TAttribute<TOptional<FSlateRenderTransform>>::FGetter ScaleGetter;
-		PaddingGetter.BindLambda([i,this]() {
+		PaddingGetter.BindLambda([i,this,RotateAngle]() {
 			const float CurLerp = MoveAnim[i].GetLerp();
-			FVector2D NewPos = StartPos + 210 * TowerWidgetDirs[i].GetSafeNormal() * CurLerp;
+			FRotator Rot(0.f, RotateAngle, 0.f);
+			FVector Pos = Rot.RotateVector(FVector(TowerWidgetDirs[i].GetSafeNormal(), 0.f));
+			FVector2D NewPos = StartPos + 250 * FVector2D(Pos) * CurLerp;
 			
 			const float Scale = 0.5f + 0.5f*CurLerp;
 			TowerButtons[i]->SetRenderOpacity(CurLerp);

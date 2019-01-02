@@ -15,7 +15,7 @@ static TArray<FString> RankString = { FString(TEXT("第一名")),FString(TEXT("�
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SMainMenuWidget::Construct(const FArguments& InArgs)
 {
-	UTexture2D* BackgroundImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/BattleField"), nullptr, LOAD_None, nullptr);
+	UTexture2D* BackgroundImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/GameImage"), nullptr, LOAD_None, nullptr);
 	UTexture2D* BorderImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/Enemy/Smoke/smokeGrey0"), nullptr, LOAD_None, nullptr);
 	UTexture2D* BackButtonImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/map/Texture/towerDefense_tile015"), nullptr, LOAD_None, nullptr);
 	FSlateBrush* BackgroundBrush = new FSlateBrush;
@@ -40,14 +40,15 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 
 	MenuPadding.Bind(MenuPaddingGetter);
 
-	TAttribute<float>::FGetter BlurGetter;
+	/*TAttribute<float>::FGetter BlurGetter;
 	TAttribute<float> BlurStrength;
 	BlurGetter.BindLambda([&]() {
 		const float CurLerp = BlurAnim.GetLerp();
 		return 3.f*CurLerp;
 		});
 
-	BlurStrength.Bind(BlurGetter);
+	BlurStrength.Bind(BlurGetter);*/
+
 	RankAnims.SetNum(11);
 	ChildSlot
 	[
@@ -67,7 +68,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		+SOverlay::Slot()
 		[
 			SNew(SBackgroundBlur)
-			.BlurStrength(BlurStrength)
+			.BlurStrength(5.f)
 		]
 		+SOverlay::Slot()
 		.HAlign(EHorizontalAlignment::HAlign_Left)

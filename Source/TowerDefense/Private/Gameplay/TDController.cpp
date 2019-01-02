@@ -87,8 +87,26 @@ void ATDController::DetectMap()
 	FVector WorldLocation, Dir;
 	FVector2D MousePos;
 	GetMousePosition(MousePos.X, MousePos.Y);
-	HAIAIMIHelper::Debug_ScreenMessage(MousePos.ToString());
 	
+	FVector2D ScreenLocation = HAIAIMIHelper::ConvertToNormalCoord(MousePos);
+	float RotateAngle = 0.f;
+	if (ScreenLocation.X < 300.f && ScreenLocation.Y < 300.f)
+		RotateAngle = 135.f;
+	else if (ScreenLocation.X > 300.f &&ScreenLocation.X < 1600.f && ScreenLocation.Y < 300.f)
+		RotateAngle = 180.f;
+	else if (ScreenLocation.X > 1600.f && ScreenLocation.Y < 300.f)
+		RotateAngle = -135.f;
+	else if (ScreenLocation.X > 1600.f && ScreenLocation.Y > 300.f&&ScreenLocation.Y < 800.f)
+		RotateAngle = -90.f;
+	else if (ScreenLocation.X >1700.f && ScreenLocation.Y > 800.f)
+		RotateAngle = -45.f;
+	else if (ScreenLocation.X > 300.f &&ScreenLocation.X < 1700.f && ScreenLocation.Y > 800.f)
+		RotateAngle = 0.f;
+	else if (ScreenLocation.X < 300.f && ScreenLocation.Y > 800.f)
+		RotateAngle = 45.f;
+	else if (ScreenLocation.X < 300.f && ScreenLocation.Y > 300.f&&ScreenLocation.Y < 800.f)
+		RotateAngle = 90.f;
+
 	FHitResult Result;
 	if (GetHitResultUnderCursor(ECollisionChannel::ECC_WorldDynamic, true, Result))
 	{
@@ -96,9 +114,10 @@ void ATDController::DetectMap()
 		if (TowerBase && TowerBase->TowerType == ETowerType::EBase)
 		{
 			SAssignNew(TowerWidget, STowerSelectWidget)
-				.StartPos(HAIAIMIHelper::ConvertToNormalCoord(MousePos))
+				.StartPos(ScreenLocation)
 				.CurController(this)
-				.CurBaseTower(TowerBase);
+				.CurBaseTower(TowerBase)
+				.RoatateAngle(RotateAngle);
 
 			GEngine->GameViewport->AddViewportWidgetContent(
 				SNew(SWeakWidget)
@@ -140,7 +159,6 @@ int32 ATDController::GetSpecifiedTowerCost(int32 Index)
 
 bool ATDController::SpawnTower(const int32 TowerIndex, ATDTowerBase* BaseTower)
 {
-	HAIAIMIHelper::Debug_ScreenMessage(FString::FormatAsNumber(CurMoney));
 	int32 BuildCost = Tower1.GetDefaultObject()->GetBuildCost();
 	if (BuildCost > CurMoney)return false;
 	if (!GetWorld())return false;
