@@ -17,6 +17,7 @@
 #include <GameFramework/GameModeBase.h>
 #include "../UI/Widgets/SRepairWidget.h"
 #include "TDPlayerCameraManager.h"
+#include <TimerManager.h>
 
 ATDController::ATDController() :
 	CurMap(nullptr),
@@ -25,7 +26,6 @@ ATDController::ATDController() :
 	TowerWidget(nullptr),
 	PauseWidget(nullptr)
 {
-	PrimaryActorTick.bCanEverTick = true;
 	static ConstructorHelpers::FClassFinder<ATDMap> DefaultMapFinder(TEXT("/Game/Blueprint/maps/map1"));
 	static ConstructorHelpers::FClassFinder<ATDTowerBase> TowerFinder(TEXT("/Game/Blueprint/Weapon/Tower2Missle"));
 	if (DefaultMapFinder.Succeeded())
@@ -56,23 +56,21 @@ void ATDController::BeginPlay()
 		SpawnParameter.Owner = this;
 		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector), SpawnParameter);
 	}
-}
 
-void ATDController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	if (GetPawn())
-	{
-		GetPawn()->SetActorLocation(FVector(590.f, 1300.f, -590.f));
-		GetPawn()->DisableInput(this);
-
-		HAIAIMIHelper::Debug_ScreenMessage(GetPawn()->GetActorRotation().ToString());
-	}
+	FTimerDelegate InitPawn;
+	InitPawn.BindLambda([&]() {
+			if (GetPawn())
+			{
+				GetPawn()->DisableInput(this);
+				GetPawn()->SetActorHiddenInGame(true);
+			}
+		});
+	GetWorld()->GetTimerManager().SetTimer(InitPawnTimer, InitPawn, 1.f, false);
 }
 
 void ATDController::SetupInputComponent()
 {
-	Super::SetupInputComponent() ;
+	Super::SetupInputComponent();
 
 	InputComponent->BindAction("SpawnEnemy", IE_Pressed, this, &ATDController::SpawnEnemy);
 	InputComponent->BindAction("ClickMap", IE_Pressed, this, &ATDController::DetectMap);

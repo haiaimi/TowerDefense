@@ -32,12 +32,12 @@ private:
 
 	TSharedPtr<class SPauseMenuWidget> PauseWidget;
 
+	FTimerHandle InitPawnTimer;
+
 public:
 	ATDController();
 
 	void BeginPlay()override;
-
-	virtual void Tick(float DeltaTime)override;
 
 	virtual void SetupInputComponent()override;
 
