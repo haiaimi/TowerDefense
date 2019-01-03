@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Player/TDTowerBase.h"
-#include "TDTower2Missle.generated.h"
+#include "TDTowerMissle.generated.h"
 
 /**
  *  带有两个火箭弹的炮台
  */
 UCLASS()
-class TOWERDEFENSE_API ATDTower2Missle : public ATDTowerBase
+class TOWERDEFENSE_API ATDTowerMissle : public ATDTowerBase
 {
 	GENERATED_BODY()
 	
@@ -19,7 +19,7 @@ public:
 	class UPaperSpriteComponent* TowerBarrel;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TSubclassOf<class AMissle> MissleType;
+	TSubclassOf<class ATDProjectile> WeaponType;
 
 	/**火箭弹*/
 	class TArray<class AMissle*> Missles;
@@ -34,18 +34,18 @@ public:
 	FTimerHandle ReloadTimer;
 
 public:
-	ATDTower2Missle();
+	ATDTowerMissle();
 
 	virtual void BeginPlay()override;
 
 	virtual void Tick(float DeltaTime)override;
 
 	/**重新装弹*/
-	void Reload();
+	virtual void Reload();
 
-	void FireLoop();
+	virtual void FireLoop();
 
-	void Fire();
+	virtual void Fire();
 
 	FTransform GetNearestEnemy();
 

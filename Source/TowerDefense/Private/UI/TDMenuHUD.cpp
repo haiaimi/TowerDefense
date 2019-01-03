@@ -6,6 +6,7 @@
 #include <Engine/GameViewportClient.h>
 #include "Common/HAIAIMIHelper.h"
 #include "Delegate.h"
+#include <Kismet/GameplayStatics.h>
 
 
 ATDMenuHUD::ATDMenuHUD():
@@ -38,7 +39,7 @@ void ATDMenuHUD::DrawHUD()
 void ATDMenuHUD::LaunchGame()
 {
 	if (GetWorld())
-		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"), false, true);
+		UGameplayStatics::OpenLevel(GetWorld(), TEXT("/Game/GameLevels/GameMap"), true);
 }
 
 void ATDMenuHUD::QuitGame()

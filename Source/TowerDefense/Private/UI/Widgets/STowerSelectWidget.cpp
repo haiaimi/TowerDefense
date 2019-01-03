@@ -65,7 +65,7 @@ void STowerSelectWidget::Construct(const FArguments& InArgs)
 
 			if (CurBaseTower.IsValid() && CurController.IsValid())
 			{
-				if (CurController->SpawnTower(0, CurBaseTower.Get()))
+				if (CurController->SpawnTower(i, CurBaseTower.Get()))
 				{
 					CurBaseTower.Reset();
 					MoveSecquence.Reverse();

@@ -1,6 +1,6 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "TDTower2Missle.h"
+#include "TDTowerMissle.h"
 #include <PaperSpriteComponent.h>
 #include "Missle.h"
 #include <Engine/World.h>
@@ -15,7 +15,7 @@
 #include "ExplosionEffect.h"
 
 
-ATDTower2Missle::ATDTower2Missle() :
+ATDTowerMissle::ATDTowerMissle() :
 	FireInterval(1.f),
 	TowerBarrelPitch(0.f),
 	TowerBarrel(nullptr)
@@ -32,7 +32,7 @@ ATDTower2Missle::ATDTower2Missle() :
 	TowerBarrel->TranslucencySortPriority = 3;
 }
 
-void ATDTower2Missle::BeginPlay()
+void ATDTowerMissle::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -40,7 +40,7 @@ void ATDTower2Missle::BeginPlay()
 	Reload();
 }
 
-void ATDTower2Missle::Tick(float DeltaTime)
+void ATDTowerMissle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -66,7 +66,7 @@ void ATDTower2Missle::Tick(float DeltaTime)
 	FireInterval -= DeltaTime;
 }
 
-void ATDTower2Missle::Reload()
+void ATDTowerMissle::Reload()
 {
 	int32 MissleIndex = 1;
 	FString SocketName = FString("Missle") + FString::FormatAsNumber(MissleIndex);
@@ -74,19 +74,19 @@ void ATDTower2Missle::Reload()
 	{
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.Owner = this;
-		AMissle* TmpMissle = GetWorld()->SpawnActor<AMissle>(MissleType, TowerBarrel->GetSocketTransform(*SocketName), SpawnParameters);
+		AMissle* TmpMissle = GetWorld()->SpawnActor<AMissle>(WeaponType, TowerBarrel->GetSocketTransform(*SocketName), SpawnParameters);
 		TmpMissle->AttachToComponent(TowerBarrel, FAttachmentTransformRules::KeepWorldTransform, *SocketName);
 		if (TmpMissle)Missles.Add(TmpMissle);
 		SocketName = FString("Missle") + FString::FormatAsNumber(++MissleIndex);
 	}
 }
 
-void ATDTower2Missle::FireLoop()
+void ATDTowerMissle::FireLoop()
 {
 
 }
 
-void ATDTower2Missle::Fire()
+void ATDTowerMissle::Fire()
 {
 	if (Missles.Num() == 0)return;
 
@@ -106,7 +106,7 @@ void ATDTower2Missle::Fire()
 	}
 }
 
-FTransform ATDTower2Missle::GetNearestEnemy()
+FTransform ATDTowerMissle::GetNearestEnemy()
 {
 	FTransform Res;
 	float MinDistance = INT_MAX;
@@ -123,7 +123,7 @@ FTransform ATDTower2Missle::GetNearestEnemy()
 	return Res;
 }
 
-void ATDTower2Missle::Destroyed()
+void ATDTowerMissle::Destroyed()
 {
 	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);   //清除定时器
 	GetWorld()->GetTimerManager().ClearTimer(InjuredTimer);
@@ -143,7 +143,7 @@ void ATDTower2Missle::Destroyed()
 	Super::Destroyed();
 }
 
-void ATDTower2Missle::OnInjured()
+void ATDTowerMissle::OnInjured()
 {
 	Super::OnInjured();
 }

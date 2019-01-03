@@ -4,20 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Weapon/TDProjectile.h"
-#include "TankBullet.generated.h"
+#include "TowerBullet.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TOWERDEFENSE_API ATankBullet : public ATDProjectile
+class TOWERDEFENSE_API ATowerBullet : public ATDProjectile
 {
 	GENERATED_BODY()
-	
-	
-public:
-	ATankBullet();
 
+public:
+	ATowerBullet();
+	
 	UFUNCTION()
 	virtual void OnImpact(const FHitResult& result)override;
 };

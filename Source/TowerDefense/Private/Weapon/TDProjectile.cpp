@@ -32,7 +32,7 @@ ATDProjectile::ATDProjectile():
 	
 	RootComponent = ProjectileCollision;
 	ProjectileSprite->SetupAttachment(RootComponent);
-	ProjectileSprite->TranslucencySortPriority = 4;
+	ProjectileSprite->TranslucencySortPriority = 5;
 }
 
 // Called when the game starts or when spawned
@@ -65,19 +65,6 @@ void ATDProjectile::Tick(float DeltaTime)
 void ATDProjectile::Launch(FVector Veolcity)
 {
 	ProjectileComponent->Velocity = Veolcity;
-}
-
-void ATDProjectile::OnImpact(const FHitResult& result)
-{
-	//爆炸效果
-	FVector ImpactPoint = result.ImpactPoint;
-
-	if (ATDTowerBase* Tower = Cast<ATDTowerBase>(result.GetActor()))
-	{
-		Tower->TakeDamage(Damage, FDamageEvent(), NULL, NULL);
-	}
-	
-	Destroy();
 }
 
 void ATDProjectile::NotifyActorBeginOverlap(AActor* OtherActor)

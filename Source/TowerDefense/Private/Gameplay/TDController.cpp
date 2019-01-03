@@ -26,12 +26,19 @@ ATDController::ATDController() :
 	TowerWidget(nullptr),
 	PauseWidget(nullptr)
 {
+	TowerTypes.SetNum(3);
 	static ConstructorHelpers::FClassFinder<ATDMap> DefaultMapFinder(TEXT("/Game/Blueprint/maps/map1"));
-	static ConstructorHelpers::FClassFinder<ATDTowerBase> TowerFinder(TEXT("/Game/Blueprint/Weapon/Tower2Missle"));
+	static ConstructorHelpers::FClassFinder<ATDTowerBase> TowerFinder1(TEXT("/Game/Blueprint/Weapon/Tower2Missle"));
+	static ConstructorHelpers::FClassFinder<ATDTowerBase> TowerFinder2(TEXT("/Game/Blueprint/Weapon/TowerGun"));
+	static ConstructorHelpers::FClassFinder<ATDTowerBase> TowerFinder3(TEXT("/Game/Blueprint/Weapon/Tower1Missle"));
 	if (DefaultMapFinder.Succeeded())
 		DefaultMap = DefaultMapFinder.Class;
-	if (TowerFinder.Succeeded())
-		Tower1 = TowerFinder.Class;
+	if (TowerFinder1.Succeeded())
+		TowerTypes[0] = TowerFinder1.Class;
+	if (TowerFinder2.Succeeded())
+		TowerTypes[1] = TowerFinder2.Class;
+	if (TowerFinder3.Succeeded())
+		TowerTypes[2] = TowerFinder3.Class;
 
 	PlayerCameraManagerClass = ATDPlayerCameraManager::StaticClass();
 }
@@ -96,15 +103,15 @@ void ATDController::DetectMap()
 		RotateAngle = 180.f;
 	else if (ScreenLocation.X > 1600.f && ScreenLocation.Y < 300.f)
 		RotateAngle = -135.f;
-	else if (ScreenLocation.X > 1600.f && ScreenLocation.Y > 300.f&&ScreenLocation.Y < 800.f)
+	else if (ScreenLocation.X > 1600.f && ScreenLocation.Y > 300.f && ScreenLocation.Y < 800.f)
 		RotateAngle = -90.f;
-	else if (ScreenLocation.X >1700.f && ScreenLocation.Y > 800.f)
+	else if (ScreenLocation.X > 1700.f && ScreenLocation.Y > 800.f)
 		RotateAngle = -45.f;
 	else if (ScreenLocation.X > 300.f &&ScreenLocation.X < 1700.f && ScreenLocation.Y > 800.f)
 		RotateAngle = 0.f;
 	else if (ScreenLocation.X < 300.f && ScreenLocation.Y > 800.f)
 		RotateAngle = 45.f;
-	else if (ScreenLocation.X < 300.f && ScreenLocation.Y > 300.f&&ScreenLocation.Y < 800.f)
+	else if (ScreenLocation.X < 300.f && ScreenLocation.Y > 300.f && ScreenLocation.Y < 800.f)
 		RotateAngle = 90.f;
 
 	FHitResult Result;
@@ -154,15 +161,15 @@ void ATDController::AddMoney(int32 AddedMoney)
 
 int32 ATDController::GetSpecifiedTowerCost(int32 Index)
 {
-	return Tower1.GetDefaultObject()->GetBuildCost();
+	return TowerTypes[Index].GetDefaultObject()->GetBuildCost();
 }
 
 bool ATDController::SpawnTower(const int32 TowerIndex, ATDTowerBase* BaseTower)
 {
-	int32 BuildCost = Tower1.GetDefaultObject()->GetBuildCost();
+	int32 BuildCost = TowerTypes[TowerIndex].GetDefaultObject()->GetBuildCost();
 	if (BuildCost > CurMoney)return false;
 	if (!GetWorld())return false;
-	ATDTowerBase* SpawnedTower = GetWorld()->SpawnActorDeferred<ATDTowerBase>(Tower1, BaseTower->GetTransform(), BaseTower->GetOwner());
+	ATDTowerBase* SpawnedTower = GetWorld()->SpawnActorDeferred<ATDTowerBase>(TowerTypes[TowerIndex], BaseTower->GetTransform(), BaseTower->GetOwner());
 	if (SpawnedTower)
 	{
 		SpawnedTower->InMapIndex = BaseTower->InMapIndex;
@@ -190,7 +197,7 @@ bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCa
 			BackMenuDelgate.BindLambda([&]() {
 				if (GetWorld())
 				{
-					GetWorld()->ServerTravel(TEXT("/Game/Levels/Menu"), false, true);
+					UGameplayStatics::OpenLevel(GetWorld(), TEXT("/Game/GameLevels/Menu"));
 				}
 				HAIAIMIHelper::SaveScore(CurScore);
 				});
@@ -237,6 +244,6 @@ void ATDController::RestartGame()
 		{
 			(*Iter)->Destroy();
 		}
-		GetWorld()->ServerTravel(TEXT("/Game/Levels/GameMap"), false, true);
+		UGameplayStatics::OpenLevel(GetWorld(), TEXT("/Game/GameLevels/GameMap"), true);
 	}
 }

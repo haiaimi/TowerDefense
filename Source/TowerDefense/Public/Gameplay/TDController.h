@@ -21,7 +21,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TSubclassOf<class ATDMap> DefaultMap;
 
-	TSubclassOf<class ATDTowerBase> Tower1;
+	TArray<TSubclassOf<class ATDTowerBase>> TowerTypes;
 
 private:
 	int32 CurMoney;

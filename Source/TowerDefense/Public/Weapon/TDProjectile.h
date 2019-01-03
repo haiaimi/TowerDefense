@@ -46,7 +46,7 @@ public:
 	virtual void Launch(FVector Veolcity);
 
 	UFUNCTION()
-	virtual void OnImpact(const FHitResult& result);
+	virtual void OnImpact(const FHitResult& result) {};
 	
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor)override;
 };
