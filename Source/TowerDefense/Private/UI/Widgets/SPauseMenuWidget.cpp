@@ -129,7 +129,7 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 							]
 						]
 					]
-			]
+				]
 		]
 	];
 	

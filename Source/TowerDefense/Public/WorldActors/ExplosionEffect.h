@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -12,7 +12,7 @@ class TOWERDEFENSE_API AExplosionEffect : public AActor
 	GENERATED_BODY()
 	
 public:
-	/**±¬Õ¨Sprite*/
+	/**çˆ†ç‚¸Sprite*/
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	class UPaperSpriteComponent* BoomSprite;
 
@@ -21,18 +21,22 @@ public:
 
 	FTimerHandle AlphaTimer;
 
-	/**Ã¿Ö¡Ê±¼ä*/
+	/**æ¯å¸§æ—¶é—´*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float PerFrameTime;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FVector MoveDir;
 
-	/**Ëõ·Å²ÎÊı£ºX·ÖÁ¿Îª³õÊ¼³ß´ç£¬YÎª³ß´çÔö¼ÓËÙ¶È*/
+	/**ç¼©æ”¾å‚æ•°ï¼šXåˆ†é‡ä¸ºåˆå§‹å°ºå¯¸ï¼ŒYä¸ºå°ºå¯¸å¢åŠ é€Ÿåº¦*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FVector2D ScaleParam;
 
 	int CurSpriteIndex;
+
+	float DelayTime;
+
+	FTimerHandle DelayTimer;
 
 public:	
 	// Sets default values for this actor's properties

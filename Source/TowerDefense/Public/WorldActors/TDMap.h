@@ -34,6 +34,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UBoxComponent* OutDetection;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<class AExplosionEffect> ExplosionEffect;
+
 	/**所有炮台的类型*/
 	TArray<ETowerType::Type> AllTowerType;
 	
@@ -52,6 +55,12 @@ public:
 	void SpawnEnemy();
 	
 	void UpdateTowerType(ETowerType::Type InType, int32 Index);
+
+	/**对*/
+	UFUNCTION(BlueprintNativeEvent)
+	void ApplyBomb(class UBoxComponent* Box);
+
+	virtual void ApplyBomb_Implementation(class UBoxComponent* Box);
 
 private:
 	UFUNCTION()

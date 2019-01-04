@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TDBomber.h"
 #include "PaperSprite.h"
@@ -9,7 +9,7 @@
 
 // Sets default values
 ATDBomber::ATDBomber():
-	MoveDir(-30.f,0.f,0.f)
+	MoveDir(-25.f,0.f,0.f)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -38,10 +38,10 @@ void ATDBomber::BeginPlay()
 		if (Planes[i])
 		{
 			Planes[i]->SetSprite(PlaneSprites[i]);
+			Planes[i]->TranslucencySortPriority = 8.f;
 			Planes[i]->RegisterComponentWithWorld(GetWorld());
 			Planes[i]->RegisterComponent();
-			if (i != 0)Planes[i]->AttachToComponent(Planes[0], FAttachmentTransformRules::KeepWorldTransform);
-			Planes[i]->TranslucencySortPriority = 8.f;
+			if (i != 0)Planes[i]->AttachToComponent(Planes[0], FAttachmentTransformRules::KeepRelativeTransform);
 		}
 		PlaneShadows[i] = NewObject<UPaperSpriteComponent>(this);
 		if (PlaneShadows[i])
@@ -49,17 +49,17 @@ void ATDBomber::BeginPlay()
 			PlaneShadows[i]->SetSprite(PlaneShadowSprites[i]);
 			PlaneShadows[i]->SetupAttachment(Planes[i]);
 			PlaneShadows[i]->SetRelativeLocation(FVector(-150.f, 0.f, -100.f));
+			PlaneShadows[i]->TranslucencySortPriority = 8.f;
 			PlaneShadows[i]->RegisterComponentWithWorld(GetWorld());
 			PlaneShadows[i]->RegisterComponent();
-			PlaneShadows[i]->TranslucencySortPriority = 8.f;
 		}
 	}
 	
 	RootComponent = Planes[0];
-	Planes[1]->SetRelativeLocation(FVector(-300.f, 0.f, 300.f));
-	Planes[2]->SetRelativeLocation(FVector(-300.f, 0.f, -300.f));
+	Planes[1]->SetRelativeLocation(FVector(-250.f, 0.f, 300.f));
+	Planes[2]->SetRelativeLocation(FVector(-250.f, 0.f, -300.f));
 	
-	SetActorLocation(FVector(0.f, 1000.f, 0.f));
+	SetActorLocation(FVector(0.f, 300.f, 0.f));
 	SetActorRotation(MoveDir);
 	SetActorScale3D(FVector(2.f, 2.f, 2.f));
 }
@@ -69,6 +69,6 @@ void ATDBomber::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	SetActorLocation(GetActorLocation() + 100.f*DeltaTime*MoveDir.Vector());
+	SetActorLocation(GetActorLocation() + 700.f*DeltaTime*MoveDir.Vector());
 }
 

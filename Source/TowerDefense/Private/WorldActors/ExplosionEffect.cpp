@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ExplosionEffect.h"
 #include <PaperSpriteComponent.h>
@@ -14,7 +14,8 @@ AExplosionEffect::AExplosionEffect():
 	CurSpriteIndex(0),
 	PerFrameTime(0.16f),
 	MoveDir(0.f,0.f,0.f),
-	ScaleParam(1.f,1.f)
+	ScaleParam(1.f,1.f),
+	DelayTime(0.1f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -32,7 +33,7 @@ void AExplosionEffect::BeginPlay()
 	Super::BeginPlay();
 	SetActorScale3D(FVector(1.f, 1.f, 1.f)*ScaleParam.X);
 
-	UpdateSprites();
+	GetWorldTimerManager().SetTimer(DelayTimer, this, &AExplosionEffect::UpdateSprites, DelayTime, false);
 }
 
 // Called every frame

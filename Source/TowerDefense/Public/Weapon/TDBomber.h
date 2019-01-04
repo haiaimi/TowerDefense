@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -12,10 +12,10 @@ class TOWERDEFENSE_API ATDBomber : public AActor
 	GENERATED_BODY()
 	
 public:
-	/**·É»úSprites*/
+	/**é£žæœºSprites*/
 	TArray<class UPaperSpriteComponent*> Planes;
 
-	/**·É»úÒõÓ°Sprites*/
+	/**é£žæœºé˜´å½±Sprites*/
 	TArray<class UPaperSpriteComponent*> PlaneShadows;
 	
 	FRotator MoveDir;
@@ -30,7 +30,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	
-	
 };

@@ -9,6 +9,9 @@
 #include <Components/BoxComponent.h>
 #include "TDController.h"
 #include "HAIAIMIHelper.h"
+#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
+#include "ExplosionEffect.h"
+#include <Kismet/GameplayStatics.h>
 
 
 // Sets default values
@@ -65,9 +68,35 @@ void ATDMap::UpdateTowerType(ETowerType::Type InType, int32 Index)
 	AllTowerType[Index] = InType;
 }
 
+void ATDMap::ApplyBomb_Implementation(class UBoxComponent* Box)
+{
+	if(Box)
+	{
+		TArray<AActor*> OverlapActors;
+		Box->GetOverlappingActors(OverlapActors, ATDEnemy::StaticClass());
+		
+		for(auto Iter = OverlapActors.CreateIterator();Iter;++Iter)
+		{
+			(*Iter)->TakeDamage(50.f, FDamageEvent(), Cast<APlayerController>(GetOwner()), this);
+		}
+	}
+	for (int32 i = 0; i < 10; ++i)
+	{
+		FVector RandPoint = UKismetMathLibrary::RandomPointInBoundingBox(Box->GetComponentLocation(), Box->GetUnscaledBoxExtent());
+		if (GetWorld())
+		{
+			AExplosionEffect* TempEffect = GetWorld()->SpawnActorDeferred<AExplosionEffect>(ExplosionEffect, FTransform(FRotator::ZeroRotator, RandPoint), this);
+			if (TempEffect)
+			{
+				TempEffect->DelayTime = FMath::FRand();
+				UGameplayStatics::FinishSpawningActor(TempEffect, FTransform(FRotator::ZeroRotator, RandPoint));
+			}
+		}
+	}
+}
+
 void ATDMap::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	//HAIAIMIHelper::Debug_ScreenMessage(TEXT("Box Overlap"));
 	if (ATDEnemy* Enemy = Cast<ATDEnemy>(OtherActor))
 	{
 		if (ATDController* MC = Cast<ATDController>(GetOwner()))

@@ -54,6 +54,7 @@ void ATDController::BeginPlay()
 	for (TActorIterator<ATDMap> Iter(GetWorld()); Iter; ++Iter)
 	{
 		CurMap = *Iter;
+		CurMap->SetOwner(this);
 		break;
 	}
 	
@@ -63,6 +64,7 @@ void ATDController::BeginPlay()
 		SpawnParameter.Owner = this;
 		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector), SpawnParameter);
 	}
+	CurMap->ApplyBomb(nullptr);
 
 	FTimerDelegate InitPawn;
 	InitPawn.BindLambda([&]() {
@@ -72,7 +74,7 @@ void ATDController::BeginPlay()
 				GetPawn()->SetActorHiddenInGame(true);
 			}
 		});
-	GetWorld()->GetTimerManager().SetTimer(InitPawnTimer, InitPawn, 1.f, false);
+	GetWorld()->GetTimerManager().SetTimer(InitPawnTimer, InitPawn, 0.1f, false);
 }
 
 void ATDController::SetupInputComponent()
@@ -195,11 +197,11 @@ bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCa
 		{
 			FSimpleDelegate BackMenuDelgate;
 			BackMenuDelgate.BindLambda([&]() {
-				if (GetWorld())
-				{
-					UGameplayStatics::OpenLevel(GetWorld(), TEXT("/Game/GameLevels/Menu"));
-				}
-				HAIAIMIHelper::SaveScore(CurScore);
+					if (GetWorld())
+					{
+						HAIAIMIHelper::SaveScore(CurScore);
+						UGameplayStatics::OpenLevel(GetWorld(), TEXT("/Game/GameLevels/Menu"));
+					}
 				});
 
 			SAssignNew(PauseWidget, SPauseMenuWidget)
