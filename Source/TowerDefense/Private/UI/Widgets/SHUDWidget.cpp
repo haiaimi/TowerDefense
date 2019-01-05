@@ -1,6 +1,6 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "SScoreWidget.h"
+#include "SHUDWidget.h"
 #include "SlateOptMacros.h"
 #include "../Style/NumberSlateWidgetStyle.h"
 #include "../Style/FTowerDefenseStyle.h"
@@ -12,16 +12,18 @@
 #include <SBoxPanel.h>
 #include <Engine/Texture2D.h>
 #include "TDHUD.h"
+#include "SRepairWidget.h"
+#include "HAIAIMIHelper.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
-void SScoreWidget::Construct(const FArguments& InArgs)
+void SHUDWidget::Construct(const FArguments& InArgs)
 {
 	MyHUD = InArgs._MyHUD;
 	bBoomReady = false;
 	CurSocre = 0;
 	DestScore = 0;
 	RemainBoom = 4;
-	BoomReloadTime = 30.f;
+	BoomReloadTime = 5.f;
 	BoomReloadTimer = 0.f;
 	UpNumbers.Init(0, 5);
 	DownNumbers.Init(1, 5);
@@ -56,7 +58,7 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 
 	ChildSlot
 	[
-		SNew(SOverlay)
+		SAssignNew(HUDOverlay, SOverlay)
 		+ SOverlay::Slot()
 		.VAlign(EVerticalAlignment::VAlign_Top)
 		.HAlign(EHorizontalAlignment::HAlign_Right)
@@ -112,7 +114,7 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 		[
 			SAssignNew(BoomButton, SVerticalBox)
 			.RenderOpacity(0.5f)
-			.IsEnabled(this, &SScoreWidget::IsBoomReady)
+			.IsEnabled(this, &SHUDWidget::IsBoomReady)
 			+SVerticalBox::Slot()
 			.FillHeight(4.5f)
 			[
@@ -129,11 +131,11 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 						.HAlign(EHorizontalAlignment::HAlign_Fill)
 						.VAlign(EVerticalAlignment::VAlign_Fill)
 						.ButtonStyle(BombStyle)
-						.OnPressed(this, &SScoreWidget::CallAirSupport)
+						.OnPressed(this, &SHUDWidget::CallAirSupport)
 						[
 							SNew(SProgressBar)
 							.Style(ProgressStyle)
-							.Percent(this, &SScoreWidget::GetBoomPercent)
+							.Percent(this, &SHUDWidget::GetBoomPercent)
 							.BarFillType(EProgressBarFillType::TopToBottom)
 							.RenderTransform(FSlateRenderTransform(FMatrix2x2(FQuat2D(-0.5f*PI)).Concatenate(FMatrix2x2(0.8f))))
 							.RenderTransformPivot(FVector2D(0.5f,0.5f))
@@ -218,7 +220,7 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 }
 
 
-void SScoreWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
+void SHUDWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
 	static float BreatheTime = 0.f;
 	BreatheTime += InDeltaTime;
@@ -278,7 +280,7 @@ void SScoreWidget::Tick(const FGeometry& AllottedGeometry, const double InCurren
 	}
 }
 
-void SScoreWidget::SetupAnimation()
+void SHUDWidget::SetupAnimation()
 {
 	for (int32 i = 0; i < AnimSequence.Num(); ++i)
 	{
@@ -289,22 +291,49 @@ void SScoreWidget::SetupAnimation()
 	}
 }
 
-void SScoreWidget::AddScore(int32 AddedScore)
+void SHUDWidget::AddScore(int32 AddedScore)
 {
 	DestScore += AddedScore;
 }
 
-bool SScoreWidget::IsBoomReady()const
+TSharedPtr<class SRepairWidget> SHUDWidget::AddRepairWidget(FVector2D WidgetPos, class ATDTowerBase* Tower)
+{
+	TSharedPtr<SRepairWidget> RepairWidget(nullptr);
+	HUDOverlay->AddSlot(0)
+		.HAlign(EHorizontalAlignment::HAlign_Left)
+		.VAlign(EVerticalAlignment::VAlign_Top)
+		[
+			SAssignNew(RepairWidget, SRepairWidget)
+			.SpawnPos(WidgetPos)
+			.TowerBase(Tower)
+		];
+	FChildren* Children = HUDOverlay->GetChildren();
+	TPanelChildren<SOverlay::FOverlaySlot>* PanelChildren = (TPanelChildren<SOverlay::FOverlaySlot>*)Children;
+	(*PanelChildren)[PanelChildren->Num()-1].ZOrder = 2;
+	(*PanelChildren)[2].ZOrder = 2;
+	/*for (int32 i = 0; i < PanelChildren->Num(); ++i)
+	{
+		HAIAIMIHelper::Debug_ScreenMessage(FString::FormatAsNumber((*PanelChildren)[i].ZOrder),2.f);
+	}*/
+	return RepairWidget;
+}
+
+void SHUDWidget::RemoveRepairWidget(TSharedPtr<class SRepairWidget> AimWidget)
+{
+	HUDOverlay->RemoveSlot(AimWidget.ToSharedRef());
+}
+
+bool SHUDWidget::IsBoomReady()const
 {
 	return bBoomReady;
 }
 
-TOptional<float> SScoreWidget::GetBoomPercent() const
+TOptional<float> SHUDWidget::GetBoomPercent() const
 {
 	return BoomReloadTimer / BoomReloadTime;
 }
 
-void SScoreWidget::CallAirSupport()
+void SHUDWidget::CallAirSupport()
 {
 	RemainBoom--;
 	BoomReloadTimer = 0.f;

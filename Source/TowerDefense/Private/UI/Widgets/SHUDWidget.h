@@ -9,10 +9,10 @@
 /**
  *
  */
-class SScoreWidget : public SCompoundWidget
+class SHUDWidget : public SCompoundWidget
 {
 public:
-	SLATE_BEGIN_ARGS(SScoreWidget)
+	SLATE_BEGIN_ARGS(SHUDWidget)
 	{}
 	SLATE_ARGUMENT(TWeakObjectPtr<class ATDHUD>, MyHUD)
 	SLATE_END_ARGS()
@@ -31,6 +31,18 @@ public:
 	}
 
 	void AddScore(int32 AddedScore);
+
+	/** 
+	  * Method:    AddRepairWidget  添加修理控件
+	  * FullName:  SHUDWidget::AddRepairWidget
+	  * @Parameter: FVector2D WidgetPos  控件生成位置 
+	  * @Parameter: class ATDTowerBase * Tower  所对应的Tower
+	  * @Returns:  TSharedPtr<SRepairWidget> 返回生成的控件
+	  */
+	TSharedPtr<class SRepairWidget> AddRepairWidget(FVector2D WidgetPos, class ATDTowerBase* Tower);
+
+	/**删除对应的修理控件*/
+	void RemoveRepairWidget(TSharedPtr<class SRepairWidget> AimWidget);
 
 private:
 	bool IsBoomReady()const;
@@ -52,6 +64,8 @@ private:
 	const struct FProgressBarStyle* ProgressStyle;
 
 	const struct FButtonStyle* BombStyle;
+
+	TSharedPtr<SOverlay> HUDOverlay;
 
 	TSharedPtr<SHorizontalBox> ScoreNumsUp;
 

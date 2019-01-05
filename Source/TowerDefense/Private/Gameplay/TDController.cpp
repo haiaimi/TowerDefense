@@ -9,7 +9,7 @@
 #include "TDTowerBase.h"
 #include <Engine/LocalPlayer.h>
 #include "UI/TDHUD.h"
-#include "../UI/Widgets/SScoreWidget.h"
+#include "../UI/Widgets/SHUDWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "../UI/Widgets/STowerSelectWidget.h"
 #include "SPauseMenuWidget.h"
@@ -154,7 +154,7 @@ void ATDController::AddMoney(int32 AddedMoney)
 	}
 	if (ATDHUD* CurHUD = Cast<ATDHUD>(GetHUD()))
 	{
-		TSharedPtr<class SScoreWidget> ScoreWidget = CurHUD->GetScoreWidget();
+		TSharedPtr<class SHUDWidget> ScoreWidget = CurHUD->GetHUDWidget();
 		if (ScoreWidget.IsValid())
 			ScoreWidget->AddScore(AddedMoney);
 	}

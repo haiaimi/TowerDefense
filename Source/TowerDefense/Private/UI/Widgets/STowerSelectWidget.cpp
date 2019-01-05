@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "STowerSelectWidget.h"
 #include "SlateOptMacros.h"
@@ -9,7 +9,7 @@
 #include <Engine/World.h>
 #include <Engine/Engine.h>
 #include <Kismet/GameplayStatics.h>
-#include "SScoreWidget.h"
+#include "SHUDWidget.h"
 #include "STowerButtonWidget.h"
 
 static const TArray<FVector2D> TowerWidgetDirs = { FVector2D(-1,-1),FVector2D(0,-1),FVector2D(1,-1) };

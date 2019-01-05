@@ -21,7 +21,7 @@ public:
 
 	virtual void BeginPlay()override;
 
-	TSharedPtr<class SScoreWidget> GetScoreWidget()
+	TSharedPtr<class SHUDWidget> GetHUDWidget()
 	{
 		return ScoreWidget;
 	}
@@ -29,7 +29,7 @@ public:
 	void SpawnBomber();
 
 private:
-	TSharedPtr<class SScoreWidget> ScoreWidget;
+	TSharedPtr<class SHUDWidget> ScoreWidget;
 
 	TSharedPtr<class SPauseMenuWidget> PauseWidget;
 };

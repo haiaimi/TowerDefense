@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -49,7 +49,7 @@ private:
 	
 	TWeakObjectPtr<ATDController> CurController;
 
-	/**¿Ø¼şÔÚÆÁÄ»ÉÏÒÆ¶¯µÄ·½Ïò*/
+	/**æ§ä»¶åœ¨å±å¹•ä¸Šç§»åŠ¨çš„æ–¹å‘*/
 	FVector2D MoveDir;
 
 	FVector2D StartPos;

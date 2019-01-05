@@ -50,6 +50,8 @@ private:
 	/**建造所需消耗的金币*/
 	int32 BuildCost;
 
+	class ATDHUD* HUDRef;
+
 public:	
 	// Sets default values for this actor's properties
 	ATDTowerBase();

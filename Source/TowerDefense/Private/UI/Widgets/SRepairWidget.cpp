@@ -12,7 +12,7 @@ void SRepairWidget::Construct(const FArguments& InArgs)
 	TowerBase = InArgs._TowerBase;
 	bInRepair = false;
 	RepairStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FRepairStyle>(TEXT("RepairStyle"));
-
+	
 	ChildSlot
 	[
 		SNew(SOverlay)

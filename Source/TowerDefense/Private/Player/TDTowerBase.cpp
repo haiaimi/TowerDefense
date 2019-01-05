@@ -17,6 +17,8 @@
 #include <Engine/GameViewportClient.h>
 #include "ExplosionEffect.h"
 #include <TimerManager.h>
+#include "TDHUD.h"
+#include "SHUDWidget.h"
 
 
 // Sets default values
@@ -27,7 +29,8 @@ ATDTowerBase::ATDTowerBase() :
 	InMapIndex(0),
 	BuildCost(400),
 	RepairWidget(NULL),
-	InjureSmoke(NULL)
+	InjureSmoke(NULL),
+	HUDRef(nullptr)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -82,17 +85,18 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 			CurController->ProjectWorldLocationToScreen(GetActorLocation() + FVector(50.f, 0.f, 120.f), ScreenLocation);
 			ScreenLocation = HAIAIMIHelper::ConvertToNormalCoord(ScreenLocation);
 
-			if (!RepairWidget.IsValid() && GEngine)
+			if (!RepairWidget.IsValid())
 			{
-				SAssignNew(RepairWidget, SRepairWidget)
-					.SpawnPos(ScreenLocation)
-					.TowerBase(this);
+				HAIAIMIHelper::Debug_ScreenMessage(TEXT("RepairWidget"));
+				if (HUDRef == nullptr)HUDRef = Cast<ATDHUD>(CurController->GetHUD());
+				
+				if(HUDRef)
+				{
+					TSharedPtr<SHUDWidget> CurHUDWidget = HUDRef->GetHUDWidget();
+					if (CurHUDWidget.IsValid())
+						RepairWidget = CurHUDWidget->AddRepairWidget(ScreenLocation, this);
+				}
 
-				GEngine->GameViewport->AddViewportWidgetContent(
-					SNew(SWeakWidget)
-					.PossiblyNullContent(RepairWidget.ToSharedRef()),
-					0
-				);
 			}
 			OnInjured();
 		}
@@ -111,6 +115,14 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 		{
 			AExplosionEffect* ExplosionEffect = GetWorld()->SpawnActor<AExplosionEffect>(TowerExpolsionEffect, ExplosionTransform);
 			ExplosionEffect->SetActorScale3D(FVector(2.f, 2.f, 2.f));
+		}
+
+		if (RepairWidget.IsValid() && HUDRef)
+		{
+			HAIAIMIHelper::Debug_ScreenMessage(TEXT("Destroy Widget"));
+			if (HUDRef->GetHUDWidget().IsValid())
+				HUDRef->GetHUDWidget()->RemoveRepairWidget(RepairWidget);
+			RepairWidget.Reset();
 		}
 		Destroy();
 	}
@@ -142,8 +154,12 @@ void ATDTowerBase::HealSelf()
 		GetWorld()->GetTimerManager().ClearTimer(HealTimer);
 		GetWorld()->GetTimerManager().ValidateHandle(HealTimer);
 
-		if (RepairWidget.IsValid())
+		if (RepairWidget.IsValid() && HUDRef)
+		{
+			if (HUDRef->GetHUDWidget().IsValid())
+				HUDRef->GetHUDWidget()->RemoveRepairWidget(RepairWidget);
 			RepairWidget.Reset();
+		}
 	}
 }
 

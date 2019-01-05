@@ -4,7 +4,7 @@
 #include <Engine/Engine.h>
 #include <Engine/GameViewportClient.h>
 #include "Common/HAIAIMIHelper.h"
-#include "Widgets/SScoreWidget.h"
+#include "Widgets/SHUDWidget.h"
 #include "Widgets/STowerSelectWidget.h"
 #include "Widgets/SRepairWidget.h"
 #include "SPauseMenuWidget.h"
@@ -23,7 +23,7 @@ void ATDHUD::DrawHUD()
 
 	if (!ScoreWidget.IsValid() && GEngine)
 	{
-		SAssignNew(ScoreWidget, SScoreWidget)
+		SAssignNew(ScoreWidget, SHUDWidget)
 			.MyHUD(this);
 
 		GEngine->GameViewport->AddViewportWidgetContent(
