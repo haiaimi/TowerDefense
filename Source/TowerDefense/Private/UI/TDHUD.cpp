@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UI/TDHUD.h"
 #include <Engine/Engine.h>
@@ -8,6 +8,7 @@
 #include "Widgets/STowerSelectWidget.h"
 #include "Widgets/SRepairWidget.h"
 #include "SPauseMenuWidget.h"
+#include "TDBomber.h"
 
 
 ATDHUD::ATDHUD() :
@@ -22,7 +23,8 @@ void ATDHUD::DrawHUD()
 
 	if (!ScoreWidget.IsValid() && GEngine)
 	{
-		SAssignNew(ScoreWidget, SScoreWidget);
+		SAssignNew(ScoreWidget, SScoreWidget)
+			.MyHUD(this);
 
 		GEngine->GameViewport->AddViewportWidgetContent(
 			SNew(SWeakWidget)
@@ -52,4 +54,15 @@ void ATDHUD::DrawHUD()
 void ATDHUD::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ATDHUD::SpawnBomber()
+{
+	//生成空援Actor
+	if(GetWorld())
+	{
+		FActorSpawnParameters SpawnPaprameter;
+		SpawnPaprameter.Owner = this;
+		GetWorld()->SpawnActor<ATDBomber>(SpawnPaprameter);
+	}
 }

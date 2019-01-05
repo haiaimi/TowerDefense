@@ -9,17 +9,31 @@
 #include "STowerSelectWidget.h"
 #include <Engine/Engine.h>
 #include <Engine/GameViewportClient.h>
+#include <SBoxPanel.h>
+#include <Engine/Texture2D.h>
+#include "TDHUD.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SScoreWidget::Construct(const FArguments& InArgs)
 {
+	MyHUD = InArgs._MyHUD;
+	bBoomReady = false;
 	CurSocre = 0;
 	DestScore = 0;
+	RemainBoom = 4;
+	BoomReloadTime = 30.f;
+	BoomReloadTimer = 0.f;
 	UpNumbers.Init(0, 5);
 	DownNumbers.Init(1, 5);
 	ScrollAnim.SetNum(5);
 	AnimSequence.SetNum(5);
 	NumberStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FNumberSlateStyle>(TEXT("NumberStyle"));
+	ProgressStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FProgressBarStyle>(TEXT("BombProgressStyle"));
+	BombStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FButtonStyle>(TEXT("PauseMenuButtonStyle"));   //这里直接使用暂停按钮的样式
+
+	UTexture2D* BorderImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/map/Texture/TowerDefense_tile015"), nullptr, LOAD_None, nullptr);
+	FSlateBrush* BorderBrush = new FSlateBrush;
+	BorderBrush->SetResourceObject(BorderImage);
 
 	TArray<TAttribute<const FSlateBrush*>> UpAttributes;
 	TArray<TAttribute<const FSlateBrush*>> DownAttributes;
@@ -85,7 +99,82 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 				]
 			]
 		]
+		+SOverlay::Slot()
+		.HAlign(EHorizontalAlignment::HAlign_Left)
+		.VAlign(EVerticalAlignment::VAlign_Top)
+		.Padding(FMargin(0.f,50.f,0.f,0.f))
+		[
+			SAssignNew(BoomTimes,SHorizontalBox)
+		]
+		+SOverlay::Slot()
+		.HAlign(EHorizontalAlignment::HAlign_Center)
+		.VAlign(EVerticalAlignment::VAlign_Top)
+		[
+			SAssignNew(BoomButton, SVerticalBox)
+			.RenderOpacity(0.5f)
+			.IsEnabled(this, &SScoreWidget::IsBoomReady)
+			+SVerticalBox::Slot()
+			.FillHeight(4.5f)
+			[
+				SNew(SBorder)
+				.BorderImage(BorderBrush)
+				.RenderTransform(FSlateRenderTransform(1.2f))
+				.RenderTransformPivot(FVector2D(0.5f,0.5f))
+				[
+					SNew(SBox)
+					.WidthOverride(130.f)
+					.HeightOverride(130.f)
+					[
+						SNew(SButton)
+						.HAlign(EHorizontalAlignment::HAlign_Fill)
+						.VAlign(EVerticalAlignment::VAlign_Fill)
+						.ButtonStyle(BombStyle)
+						.OnPressed(this, &SScoreWidget::CallAirSupport)
+						[
+							SNew(SProgressBar)
+							.Style(ProgressStyle)
+							.Percent(this, &SScoreWidget::GetBoomPercent)
+							.BarFillType(EProgressBarFillType::TopToBottom)
+							.RenderTransform(FSlateRenderTransform(FMatrix2x2(FQuat2D(-0.5f*PI)).Concatenate(FMatrix2x2(0.8f))))
+							.RenderTransformPivot(FVector2D(0.5f,0.5f))
+						]
+					]
+				]
+			]
+			+SVerticalBox::Slot()
+			.VAlign(EVerticalAlignment::VAlign_Center)
+			.HAlign(EHorizontalAlignment::HAlign_Center)
+			.FillHeight(1.f)
+			[
+				SNew(SBox)
+				.WidthOverride(130.f)
+				.HeightOverride(30.f)
+				[
+					SNew(STextBlock)
+					.Justification(ETextJustify::Center)
+					.Text(FText::FromString(FString(TEXT("呼叫空援"))))
+					.Font(FSlateFontInfo("Roboto",18))
+				]
+				
+			]
+		]
 	];
+
+	//填充轰炸次数图标
+	for (int32 i = 0; i < RemainBoom; ++i)
+	{
+		BoomTimes->AddSlot()
+		[
+			SNew(SBox)
+			.WidthOverride(80.f)
+			.HeightOverride(80.f)
+			[
+				SNew(SImage)
+				.Image(&ProgressStyle->FillImage)
+				.RenderTransform(FSlateRenderTransform(FQuat2D(-0.25f*PI)))
+			]
+		];
+	}
 
 	for (int32 i = 0; i < 5; ++i)
 	{
@@ -131,6 +220,27 @@ void SScoreWidget::Construct(const FArguments& InArgs)
 
 void SScoreWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
+	static float BreatheTime = 0.f;
+	BreatheTime += InDeltaTime;
+
+	if ((BoomReloadTimer / BoomReloadTime) >= 1.f&&RemainBoom > 0)bBoomReady = true;
+	if (!bBoomReady)
+	{
+		BoomButton->SetRenderOpacity(1.f);
+		if (RemainBoom > 0)
+			BoomReloadTimer += InDeltaTime;
+		else
+			BoomReloadTimer = BoomReloadTime;
+	}
+	else
+	{
+		int32 Tmp = static_cast<int32>(BreatheTime);
+		if (Tmp % 2)
+			BoomButton->SetRenderOpacity(BreatheTime - Tmp);
+		else
+			BoomButton->SetRenderOpacity(1.f - (BreatheTime - Tmp));
+	}
+
 	if (CurSocre == DestScore)return;      //分数相同就直接跳过下面的步骤
 	FChildren* ChildrenUp = ScoreNumsUp->GetChildren();
 	FChildren* ChildrenDown = ScoreNumsDown->GetChildren();
@@ -182,6 +292,31 @@ void SScoreWidget::SetupAnimation()
 void SScoreWidget::AddScore(int32 AddedScore)
 {
 	DestScore += AddedScore;
+}
+
+bool SScoreWidget::IsBoomReady()const
+{
+	return bBoomReady;
+}
+
+TOptional<float> SScoreWidget::GetBoomPercent() const
+{
+	return BoomReloadTimer / BoomReloadTime;
+}
+
+void SScoreWidget::CallAirSupport()
+{
+	RemainBoom--;
+	BoomReloadTimer = 0.f;
+	bBoomReady = false;
+	
+	if (RemainBoom < 0)return;
+	FChildren* Children = BoomTimes->GetChildren();
+	TPanelChildren<SBoxPanel::FSlot>* PanelChildren = (TPanelChildren<SBoxPanel::FSlot>*)Children;
+	BoomTimes->RemoveSlot((*PanelChildren)[RemainBoom].GetWidget());
+
+	if (MyHUD.IsValid())
+		MyHUD->SpawnBomber();
 }
 
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION

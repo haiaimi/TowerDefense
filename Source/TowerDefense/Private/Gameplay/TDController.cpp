@@ -64,7 +64,6 @@ void ATDController::BeginPlay()
 		SpawnParameter.Owner = this;
 		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector), SpawnParameter);
 	}
-	CurMap->ApplyBomb(nullptr);
 
 	FTimerDelegate InitPawn;
 	InitPawn.BindLambda([&]() {

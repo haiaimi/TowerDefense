@@ -5,6 +5,9 @@
 #include "PaperSpriteComponent.h"
 #include "HAIAIMIHelper.h"
 #include "Components/SceneComponent.h"
+#include <Engine/World.h>
+#include "TDController.h"
+#include "TDMap.h"
 
 
 // Sets default values
@@ -22,6 +25,7 @@ void ATDBomber::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetLifeSpan(10.f);
 	TArray<UPaperSprite*> PlaneSprites; PlaneSprites.Init(nullptr, 3);
 	TArray<UPaperSprite*> PlaneShadowSprites;PlaneShadowSprites.Init(nullptr, 3);
 	
@@ -62,6 +66,12 @@ void ATDBomber::BeginPlay()
 	SetActorLocation(FVector(0.f, 300.f, 0.f));
 	SetActorRotation(MoveDir);
 	SetActorScale3D(FVector(2.f, 2.f, 2.f));
+
+	if(GetWorld() && GetWorld()->GetFirstPlayerController())
+	{
+		ATDController* MC = Cast<ATDController>(GetWorld()->GetFirstPlayerController());
+		MC->CurMap->ApplyBomb(nullptr);
+	}
 }
 
 // Called every frame

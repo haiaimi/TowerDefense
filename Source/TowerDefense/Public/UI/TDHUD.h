@@ -26,6 +26,8 @@ public:
 		return ScoreWidget;
 	}
 
+	void SpawnBomber();
+
 private:
 	TSharedPtr<class SScoreWidget> ScoreWidget;
 
