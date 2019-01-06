@@ -19,11 +19,12 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SHUDWidget::Construct(const FArguments& InArgs)
 {
 	MyHUD = InArgs._MyHUD;
+	bPause = false;
 	bBoomReady = false;
 	CurSocre = 0;
 	DestScore = 0;
 	RemainBoom = 4;
-	BoomReloadTime = 5.f;
+	BoomReloadTime = 30.f;
 	BoomReloadTimer = 0.f;
 	UpNumbers.Init(0, 5);
 	DownNumbers.Init(1, 5);
@@ -222,6 +223,7 @@ void SHUDWidget::Construct(const FArguments& InArgs)
 
 void SHUDWidget::Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime)
 {
+	if (bPause)return;   //控件暂停更新
 	static float BreatheTime = 0.f;
 	BreatheTime += InDeltaTime;
 
@@ -321,6 +323,11 @@ TSharedPtr<class SRepairWidget> SHUDWidget::AddRepairWidget(FVector2D WidgetPos,
 void SHUDWidget::RemoveRepairWidget(TSharedPtr<class SRepairWidget> AimWidget)
 {
 	HUDOverlay->RemoveSlot(AimWidget.ToSharedRef());
+}
+
+void SHUDWidget::SetWidgetPause(bool Pause)
+{
+	bPause = Pause;
 }
 
 bool SHUDWidget::IsBoomReady()const

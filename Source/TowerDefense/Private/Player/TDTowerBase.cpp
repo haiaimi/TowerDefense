@@ -87,14 +87,13 @@ float ATDTowerBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 
 			if (!RepairWidget.IsValid())
 			{
-				HAIAIMIHelper::Debug_ScreenMessage(TEXT("RepairWidget"));
 				if (HUDRef == nullptr)HUDRef = Cast<ATDHUD>(CurController->GetHUD());
 				
 				if(HUDRef)
 				{
 					TSharedPtr<SHUDWidget> CurHUDWidget = HUDRef->GetHUDWidget();
 					if (CurHUDWidget.IsValid())
-						RepairWidget = CurHUDWidget->AddRepairWidget(ScreenLocation, this);
+						RepairWidget = CurHUDWidget->AddRepairWidget(ScreenLocation+FVector2D(5.f,-10.f), this);
 				}
 
 			}

@@ -8,6 +8,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "ScoreSaveGame.h"
 #include "HAIAIMIHelper.h"
+#include "FTowerDefenseStyle.h"
 
 static TArray<FString> RankString = { FString(TEXT("第一名")),FString(TEXT("第二名")),FString(TEXT("第三名")),FString(TEXT("第四名")),FString(TEXT("第五名")),
 									  FString(TEXT("第六名")),FString(TEXT("第七名")),FString(TEXT("第八名")),FString(TEXT("第九名")),FString(TEXT("第十名")) };
@@ -15,6 +16,7 @@ static TArray<FString> RankString = { FString(TEXT("第一名")),FString(TEXT("�
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SMainMenuWidget::Construct(const FArguments& InArgs)
 {
+	ButtonStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FButtonStyle>(TEXT("PauseMenuButtonStyle"));
 	UTexture2D* BackgroundImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/GameImage"), nullptr, LOAD_None, nullptr);
 	UTexture2D* BorderImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/Enemy/Smoke/smokeGrey0"), nullptr, LOAD_None, nullptr);
 	UTexture2D* BackButtonImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/map/Texture/towerDefense_tile015"), nullptr, LOAD_None, nullptr);
@@ -185,7 +187,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 			.IsEnabled(false)
 			[
 				SNew(SButton)
-				.ButtonColorAndOpacity(FLinearColor(1.f,1.f,1.f,0.3f))
+				.ButtonStyle(ButtonStyle)
 				.OnPressed(this,&SMainMenuWidget::BackToMenu)
 				[
 					SNew(SBox)

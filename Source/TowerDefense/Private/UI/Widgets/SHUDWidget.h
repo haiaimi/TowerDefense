@@ -44,6 +44,8 @@ public:
 	/**删除对应的修理控件*/
 	void RemoveRepairWidget(TSharedPtr<class SRepairWidget> AimWidget);
 
+	void SetWidgetPause(bool Pause);
+
 private:
 	bool IsBoomReady()const;
 
@@ -85,7 +87,10 @@ private:
 
 	TWeakObjectPtr<class ATDHUD> MyHUD;
 
-	//轰炸是否已经准备好
+	/**是否停止渲染*/
+	bool bPause;
+
+	/**轰炸是否已经准备好*/
 	bool bBoomReady;
 
 	int32 RemainBoom;
