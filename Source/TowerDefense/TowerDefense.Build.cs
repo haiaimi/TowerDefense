@@ -8,7 +8,7 @@ public class TowerDefense : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Paper2D"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Paper2D", "Json" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
@@ -19,7 +19,7 @@ public class TowerDefense : ModuleRules
             });
 
         // Uncomment if you are using Slate UI
-        // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+       PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 
             // Uncomment if you are using online features
             // PrivateDependencyModuleNames.Add("OnlineSubsystem");

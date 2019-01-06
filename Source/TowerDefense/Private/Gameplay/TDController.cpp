@@ -87,7 +87,7 @@ void ATDController::SetupInputComponent()
 
 void ATDController::SpawnEnemy()
 {
-	CurMap->SpawnEnemy();
+	//CurMap->SpawnEnemy();
 }
 
 void ATDController::DetectMap()
@@ -190,6 +190,11 @@ void ATDController::ResetSelectWidget()
 
 bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCanUnpause()*/)
 {
+	if (ATDHUD* MHD = Cast<ATDHUD>(MyHUD))
+	{
+		MHD->GetHUDWidget()->SetWidgetPause(bPause);
+	}
+
 	if (bPause)
 	{
 		if (!PauseWidget.IsValid())

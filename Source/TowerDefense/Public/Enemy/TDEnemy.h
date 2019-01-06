@@ -45,6 +45,11 @@ public:
 
 	EEnemyType::Type CurType;
 
+	ATDEnemy* OverlapEnemy;
+
+	/**偏移量变化*/
+	float OffsetChanged;
+
 protected:
 	/** 目标地图*/
 	class ATDMap* DestMap;
@@ -64,4 +69,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor)override;
+
+	virtual void NotifyActorEndOverlap(AActor* OtherActor)override;
 };

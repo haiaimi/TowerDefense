@@ -32,6 +32,8 @@ private:
 	void BackToMenu();
 
 private:
+	const FButtonStyle* ButtonStyle;
+
 	TSharedPtr<SVerticalBox> RankContainer;
 
 	TSharedPtr<SBorder> BackButton;

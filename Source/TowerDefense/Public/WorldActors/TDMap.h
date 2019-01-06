@@ -20,7 +20,7 @@ public:
 	class USplineComponent* RouteLine;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TSubclassOf<class ATDEnemy> Enemy_1;
+	TArray<TSubclassOf<class ATDEnemy>> EnemyTypes;
 
 	/**可以建造的点*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (MakeEditWidget = true))
@@ -39,20 +39,19 @@ public:
 
 	/**所有炮台的类型*/
 	TArray<ETowerType::Type> AllTowerType;
+
+	FTimerHandle SpawnEnemyTimer;
 	
 public:	
-	// Sets default values for this actor's properties
 	ATDMap();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SpawnEnemy();
+	void SpawnEnemy(int32 Index);
 	
 	void UpdateTowerType(ETowerType::Type InType, int32 Index);
 

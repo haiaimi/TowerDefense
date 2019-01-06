@@ -8,6 +8,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "ScoreSaveGame.h"
 #include "HAIAIMIHelper.h"
+#include "FTowerDefenseStyle.h"
 
 static TArray<FString> RankString = { FString(TEXT("第一名")),FString(TEXT("第二名")),FString(TEXT("第三名")),FString(TEXT("第四名")),FString(TEXT("第五名")),
 									  FString(TEXT("第六名")),FString(TEXT("第七名")),FString(TEXT("第八名")),FString(TEXT("第九名")),FString(TEXT("第十名")) };
@@ -15,6 +16,7 @@ static TArray<FString> RankString = { FString(TEXT("第一名")),FString(TEXT("�
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SMainMenuWidget::Construct(const FArguments& InArgs)
 {
+	ButtonStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FButtonStyle>(TEXT("PauseMenuButtonStyle"));
 	UTexture2D* BackgroundImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/GameImage"), nullptr, LOAD_None, nullptr);
 	UTexture2D* BorderImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/Enemy/Smoke/smokeGrey0"), nullptr, LOAD_None, nullptr);
 	UTexture2D* BackButtonImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/map/Texture/towerDefense_tile015"), nullptr, LOAD_None, nullptr);
@@ -91,7 +93,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					[
 						SNew(STextBlock)
 						.Text(FText::FromString(FString(TEXT("主菜单"))))
-						.Font(FSlateFontInfo("Roboto",30))
+						.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),30))
 						.ColorAndOpacity(FSlateColor(FLinearColor(0.f,0.f,0.f,1.f)))
 						
 					]
@@ -115,7 +117,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("开始游戏"))))
-							.Font(FSlateFontInfo("Roboto",34))
+							.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),34))
 							.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
 						]
 					]
@@ -138,7 +140,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("排行榜"))))
-							.Font(FSlateFontInfo("Roboto",34))
+							.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),34))
 							.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
 						]
 					]
@@ -161,7 +163,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("退出游戏"))))
-							.Font(FSlateFontInfo("Roboto",34))
+							.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),34))
 							.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
 						]
 					]
@@ -185,7 +187,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 			.IsEnabled(false)
 			[
 				SNew(SButton)
-				.ButtonColorAndOpacity(FLinearColor(1.f,1.f,1.f,0.3f))
+				.ButtonStyle(ButtonStyle)
 				.OnPressed(this,&SMainMenuWidget::BackToMenu)
 				[
 					SNew(SBox)
@@ -196,7 +198,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					[
 						SNew(STextBlock)
 						.Text(FText::FromString(FString(TEXT("返回"))))
-						.Font(FSlateFontInfo("Roboto",30))
+						.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),30))
 					]
 				]
 			]
@@ -233,7 +235,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 			[
 				SNew(STextBlock)
 				.Text(FText::FromString(FString(TEXT("排行榜"))))
-				.Font(FSlateFontInfo("Roboto",34))
+				.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),34))
 				.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
 			]
 		]
@@ -260,7 +262,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					[
 						SNew(STextBlock)
 						.Text(FText::FromString(RankString[i]))
-						.Font(FSlateFontInfo("Roboto",32))
+						.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),32))
 						.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
 					]
 					+SHorizontalBox::Slot()
@@ -269,7 +271,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					[
 						SNew(STextBlock)
 						.Text(FText::FromString(FString::FormatAsNumber(CurScores[i])))
-						.Font(FSlateFontInfo("Roboto",32))
+						.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),32))
 						.ColorAndOpacity(FSlateColor(FLinearColor(0.105076f,0.251329f,1.f,1.f)))
 					]
 				]
