@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Common/HAIAIMIHelper.h"
 #include "TowerDefense.h"
@@ -6,7 +6,13 @@
 #include <Engine/GameViewportClient.h>
 #include <Kismet/GameplayStatics.h>
 #include "ScoreSaveGame.h"
+#include "Paths.h"
+#include "FileHelper.h"
+#include "JsonSerializer.h"
+#include "JsonValue.h"
 
+FString HAIAIMIHelper::RelativePath = FString(TEXT("LevelConfig"));
+TArray<TSharedPtr<FJsonValue>> HAIAIMIHelper::JsonParser = {};
 
 void HAIAIMIHelper::Debug_ScreenMessage(FString&& InString, float ShowTime, FColor FontColor)
 {
@@ -84,4 +90,46 @@ TArray<uint32>  HAIAIMIHelper::LoadScores()
 	}
 
 	return Res;
+}
+
+bool HAIAIMIHelper::LoadStringFromFile(const FString& FileName, FString& OutInfo)
+{
+	if (FileName.IsEmpty())return false;
+
+	FString AbsolutePath = FPaths::ProjectContentDir() + RelativePath + "/" + FileName;
+	if (FPaths::FileExists(AbsolutePath))
+	{
+		if (FFileHelper::LoadFileToString(OutInfo, *AbsolutePath))
+			return true;      //加载成功
+		else
+			Debug_LogMessage(TEXT("未找到文件"));
+	}
+
+	return false;
+}
+
+void HAIAIMIHelper::PrepareJson(const FString& FileName)
+{
+	FString JsonContent;
+	//CurParseFile = FileName;
+	if (LoadStringFromFile(FileName, JsonContent))
+	{
+		TSharedRef<TJsonReader<TCHAR>> JsonReader = TJsonReaderFactory<TCHAR>::Create(JsonContent);       //创建Json读取实例类
+
+		if (FJsonSerializer::Deserialize(JsonReader, JsonParser))    //反序列化
+			Debug_LogMessage(TEXT("读取成功"));
+		else
+			Debug_LogMessage(TEXT("读取失败"));
+	}
+}
+
+void HAIAIMIHelper::GetNumberFromJson(const FString& FileName, const FString& Key, const int32 Index, float& OutNumber)
+{
+	if (JsonParser.Num() > 0)
+	{
+		OutNumber = JsonParser[Index]->AsObject()->GetNumberField(Key);
+		//JsonParser[Index]->AsObject()->GetNumberField()
+	}
+	else
+		Debug_LogMessage(TEXT("请重新读取文件"));
 }

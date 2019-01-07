@@ -55,7 +55,7 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("继续游戏"))))
-							.Font(FSlateFontInfo("Roboto",34))
+							.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),34))
 							.ColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,1.f)))
 						]
 					]
@@ -78,7 +78,7 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 							[
 								SNew(STextBlock)
 								.Text(FText::FromString(FString(TEXT("重新开始"))))
-								.Font(FSlateFontInfo("Roboto",34))
+								.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),34))
 								.ColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,1.f)))
 							]
 						]
@@ -101,7 +101,7 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 								[
 									SNew(STextBlock)
 									.Text(FText::FromString(FString(TEXT("返回主菜单"))))
-									.Font(FSlateFontInfo("Roboto",34))
+									.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),34))
 									.ColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,1.f)))
 								]
 							]
@@ -124,7 +124,7 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 							[
 								SNew(STextBlock)
 								.Text(FText::FromString(FString(TEXT("退出游戏"))))
-								.Font(FSlateFontInfo("Roboto",34))
+								.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),34))
 								.ColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,1.f)))
 							]
 						]

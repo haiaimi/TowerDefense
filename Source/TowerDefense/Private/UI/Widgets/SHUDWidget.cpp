@@ -156,7 +156,7 @@ void SHUDWidget::Construct(const FArguments& InArgs)
 					SNew(STextBlock)
 					.Justification(ETextJustify::Center)
 					.Text(FText::FromString(FString(TEXT("呼叫空援"))))
-					.Font(FSlateFontInfo("Roboto",18))
+					.Font(FSlateFontInfo(FPaths::ProjectContentDir()/TEXT("UI/Fonts/Roboto-Regular.ttf"),18))
 				]
 				
 			]
