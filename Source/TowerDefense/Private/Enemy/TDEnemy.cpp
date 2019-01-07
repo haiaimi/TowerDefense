@@ -10,6 +10,7 @@
 #include <Components/BoxComponent.h>
 #include "TDTypes.h"
 #include "ExplosionEffect.h"
+#include "HAIAIMIHelper.h"
 
 
 // Sets default values
@@ -21,7 +22,9 @@ ATDEnemy::ATDEnemy() :
 	MoveOffset(0.f),
 	Health(100.f),
 	Bonus(100.f),
-	TraceScale(FVector(0.6f, 0.6f, 0.6f))
+	TraceScale(FVector(0.6f, 0.6f, 0.6f)),
+	OverlapEnemy(nullptr),
+	OffsetChanged(0.f)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	EnemySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("EnemySprite"));
@@ -72,6 +75,11 @@ void ATDEnemy::Tick(float DeltaTime)
 	}
 
 	Distance += Speed * DeltaTime;
+
+	if(OverlapEnemy)
+	{
+		MoveOffset += DeltaTime * OffsetChanged;
+	}
 }
 
 float ATDEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
@@ -93,5 +101,27 @@ float ATDEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	}
 
 	return 0.f;
+}
+
+void ATDEnemy::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	if (ATDEnemy* Enemy = Cast<ATDEnemy>(OtherActor))
+	{
+		OverlapEnemy = Enemy;
+		const FVector Dir = (Enemy->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		const FVector LDir = (FRotationMatrix(GetActorRotation()).GetUnitAxis(EAxis::Z));
+		if (FVector::DotProduct(Dir, LDir) > 0.f)
+			OffsetChanged = 20.f;
+		else OffsetChanged = -20.f;
+	}
+
+	Super::NotifyActorBeginOverlap(OtherActor);
+}
+
+void ATDEnemy::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	OverlapEnemy = nullptr;
+	OffsetChanged = 0.f;
+	Super::NotifyActorEndOverlap(OtherActor);
 }
 
