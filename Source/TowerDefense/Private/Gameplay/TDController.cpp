@@ -74,11 +74,6 @@ void ATDController::BeginPlay()
 			}
 		});
 	GetWorld()->GetTimerManager().SetTimer(InitPawnTimer, InitPawn, 0.1f, false);
-
-	HAIAIMIHelper::PrepareJson(TEXT("Level1.json"));
-	float EnemyType = -1;
-	HAIAIMIHelper::GetNumberFromJson(TEXT("Level1"), TEXT("EnemyType"), 0, EnemyType);
-	HAIAIMIHelper::Debug_ScreenMessage(FString::FormatAsNumber(EnemyType), 5.f);
 }
 
 void ATDController::SetupInputComponent()
@@ -92,7 +87,7 @@ void ATDController::SetupInputComponent()
 
 void ATDController::SpawnEnemy()
 {
-	CurMap->SpawnEnemy();
+	//CurMap->SpawnEnemy();
 }
 
 void ATDController::DetectMap()

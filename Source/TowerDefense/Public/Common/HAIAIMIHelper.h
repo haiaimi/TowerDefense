@@ -37,6 +37,7 @@ public:
 
 	static void GetNumberFromJson(const FString& FileName, const FString& Key, const int32 Index, float& OutNumber);
 
+	static int32 GetEnemyCounts();
 public:
 	static FString RelativePath;
 

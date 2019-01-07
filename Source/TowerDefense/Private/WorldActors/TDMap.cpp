@@ -12,6 +12,7 @@
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "ExplosionEffect.h"
 #include <Kismet/GameplayStatics.h>
+#include "TimerManager.h"
 
 
 // Sets default values
@@ -49,6 +50,9 @@ void ATDMap::BeginPlay()
 	FTransform BoxTransform = RouteLine->GetTransformAtDistanceAlongSpline(RouteLine->GetSplineLength(), ESplineCoordinateSpace::World);
 	OutDetection->SetWorldTransform(BoxTransform);
 	OutDetection->SetBoxExtent(FVector(50.f, 50.f, 50.f));
+
+	HAIAIMIHelper::PrepareJson(TEXT("Level1.json"));
+	SpawnEnemy(0);
 }
 
 // Called every frame
@@ -57,10 +61,23 @@ void ATDMap::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ATDMap::SpawnEnemy()
+void ATDMap::SpawnEnemy(int32 Index)
 {
-	if (Enemy_1)
-		GetWorld()->SpawnActor<ATDEnemy>(Enemy_1);
+	if (Index >= HAIAIMIHelper::GetEnemyCounts())return;
+	float EnemyType = -1.f, NextTime = -1.f;
+	HAIAIMIHelper::GetNumberFromJson(TEXT("Level1"), TEXT("EnemyType"), Index, EnemyType);
+	HAIAIMIHelper::GetNumberFromJson(TEXT("Level1"), TEXT("NextTime"), Index, NextTime);
+	//HAIAIMIHelper::Debug_ScreenMessage(FString::FormatAsNumber(EnemyType), 5.f);
+	GetWorld()->SpawnActor<ATDEnemy>(EnemyTypes[EnemyType]);
+
+	if (NextTime >= 0.f)
+	{
+		FTimerDelegate SpawnDelegate;
+		SpawnDelegate.BindLambda([Index, this]() {
+			SpawnEnemy(Index + 1);
+			});
+		GetWorldTimerManager().SetTimer(SpawnEnemyTimer, SpawnDelegate, NextTime, false);
+	}
 }
 
 void ATDMap::UpdateTowerType(ETowerType::Type InType, int32 Index)

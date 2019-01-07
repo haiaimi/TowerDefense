@@ -125,11 +125,18 @@ void HAIAIMIHelper::PrepareJson(const FString& FileName)
 
 void HAIAIMIHelper::GetNumberFromJson(const FString& FileName, const FString& Key, const int32 Index, float& OutNumber)
 {
+	if (JsonParser.Num() <= 0)
+		PrepareJson(FileName);
 	if (JsonParser.Num() > 0)
 	{
-		OutNumber = JsonParser[Index]->AsObject()->GetNumberField(Key);
-		//JsonParser[Index]->AsObject()->GetNumberField()
+		if (JsonParser.Num() > Index)
+			OutNumber = JsonParser[Index]->AsObject()->GetNumberField(Key);
 	}
 	else
 		Debug_LogMessage(TEXT("请重新读取文件"));
+}
+
+int32 HAIAIMIHelper::GetEnemyCounts()
+{
+	return JsonParser.Num();
 }
