@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -15,21 +15,24 @@ class TOWERDEFENSE_API ATDEnemy_Tank : public ATDEnemy
 	GENERATED_BODY()
 	
 public:
-	/**ÅÚ¹ÜSprites*/
+	/**ç‚®ç®¡Sprites*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UPaperSpriteComponent* TankBarrel;
 	
-	/**Ì¹¿Ë¿ª»ğµÄ»ğÑæ*/
+	/**å¦å…‹å¼€ç«çš„ç«ç„°*/
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UPaperSpriteComponent* TankFire;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Weapon")
 	TSubclassOf<class ATDProjectile> TankProjectile;
 
-	/**»ğÑæ³ÖĞøÊ±¼ä*/
+	UPROPERTY(EditDefaultsOnly)
+	class USoundCue* FireSound;
+
+	/**ç«ç„°æŒç»­æ—¶é—´*/
 	FTimerHandle FireTime;
 
-	/**¿ª»ğ¼äÏ¶*/
+	/**å¼€ç«é—´éš™*/
 	FTimerHandle FireInterval;
 
 	int32 TowerIndex;
@@ -45,12 +48,12 @@ public:
 
 	virtual void Tick(float DeltaTime)override;
 
-	/**Ì¹¿Ë¿ª»ğ*/
+	/**å¦å…‹å¼€ç«*/
 	void Fire();
 
-	/**¿ª»ğÑ­»·£¬2ÃëÄÚ·¢ÉäÒ»´Î*/
+	/**å¼€ç«å¾ªç¯ï¼Œ2ç§’å†…å‘å°„ä¸€æ¬¡*/
 	void FireLoop();
 
-	/**»ñÈ¡½øµÄÅÚÌ¨Î»ÖÃ*/
+	/**è·å–è¿›çš„ç‚®å°ä½ç½®*/
 	FVector GetNearestTower();
 };

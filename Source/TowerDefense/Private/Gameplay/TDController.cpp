@@ -65,6 +65,7 @@ void ATDController::BeginPlay()
 		CurMap = GetWorld()->SpawnActor<ATDMap>(DefaultMap, FTransform(FRotator::ZeroRotator, FVector::ZeroVector), SpawnParameter);
 	}
 
+	FTimerHandle InitPawnTimer;
 	FTimerDelegate InitPawn;
 	InitPawn.BindLambda([&]() {
 			if (GetPawn())
@@ -204,6 +205,7 @@ bool ATDController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate /*= FCa
 					if (GetWorld())
 					{
 						HAIAIMIHelper::SaveScore(CurScore);
+						GetWorldTimerManager().ClearTimer(CurMap->SpawnEnemyTimer);
 						UGameplayStatics::OpenLevel(GetWorld(), TEXT("/Game/GameLevels/Menu"));
 					}
 				});
@@ -250,6 +252,7 @@ void ATDController::RestartGame()
 		{
 			(*Iter)->Destroy();
 		}
+		GetWorldTimerManager().ClearTimer(CurMap->SpawnEnemyTimer);
 		UGameplayStatics::OpenLevel(GetWorld(), TEXT("/Game/GameLevels/GameMap"), true);
 	}
 }

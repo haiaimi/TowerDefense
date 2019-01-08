@@ -8,6 +8,8 @@
 #include <PaperSprite.h>
 #include <ConstructorHelpers.h>
 #include <TimerManager.h>
+#include <Kismet/GameplayStatics.h>
+#include <Sound/SoundCue.h>
 
 ATDTowerGun::ATDTowerGun()
 {
@@ -63,6 +65,8 @@ void ATDTowerGun::Fire()
 		}
 		FireSprites[i]->SetVisibility(true);
 	}
+
+	UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 
 	FireInterval = 2.f;
 	FTimerDelegate FireDelegate;

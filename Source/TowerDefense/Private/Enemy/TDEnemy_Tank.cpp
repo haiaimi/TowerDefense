@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TDEnemy_Tank.h"
 #include <PaperSpriteComponent.h>
@@ -11,7 +11,7 @@
 #include "Common/HAIAIMIHelper.h"
 #include "TDMap.h"
 #include "TDTypes.h"
-
+#include <Sound/SoundCue.h>
 
 ATDEnemy_Tank::ATDEnemy_Tank() :
 	TowerIndex(0),
@@ -67,6 +67,7 @@ void ATDEnemy_Tank::Fire()
 	ATDProjectile* SpawnedProjectile = GetWorld()->SpawnActorDeferred<ATDProjectile>(TankProjectile, SpawnTransform, this);
 	if (SpawnedProjectile)
 	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 		SpawnedProjectile->Launch(TankBarrel->GetComponentRotation().Vector()*300.f);
 		UGameplayStatics::FinishSpawningActor(SpawnedProjectile, FTransform(FRotator::ZeroRotator, SpawnTransform.GetLocation()));
 	}

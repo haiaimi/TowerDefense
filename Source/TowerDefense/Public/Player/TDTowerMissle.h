@@ -21,6 +21,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<class ATDProjectile> WeaponType;
 
+	UPROPERTY(EditDefaultsOnly)
+	class USoundCue* FireSound;
+
 	/**»ð¼ýµ¯*/
 	class TArray<class AMissle*> Missles;
 

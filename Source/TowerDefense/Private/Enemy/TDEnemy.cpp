@@ -59,7 +59,6 @@ void ATDEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Black, TEXT("Update Pos"));
 	if (DestMap)
 	{
 		USplineComponent* Spline = DestMap->RouteLine;    //获取地图得路线

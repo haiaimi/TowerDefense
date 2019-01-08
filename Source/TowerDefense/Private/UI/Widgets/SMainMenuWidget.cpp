@@ -9,6 +9,7 @@
 #include "ScoreSaveGame.h"
 #include "HAIAIMIHelper.h"
 #include "FTowerDefenseStyle.h"
+#include "MenuSoundWidgetStyle.h"
 
 static TArray<FString> RankString = { FString(TEXT("第一名")),FString(TEXT("第二名")),FString(TEXT("第三名")),FString(TEXT("第四名")),FString(TEXT("第五名")),
 									  FString(TEXT("第六名")),FString(TEXT("第七名")),FString(TEXT("第八名")),FString(TEXT("第九名")),FString(TEXT("第十名")) };
@@ -16,7 +17,12 @@ static TArray<FString> RankString = { FString(TEXT("第一名")),FString(TEXT("�
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SMainMenuWidget::Construct(const FArguments& InArgs)
 {
+	Owner = InArgs._Owner;
+	ButtonSound = InArgs._ButtonSound;
+	RankSound = InArgs._RankSound;
+
 	ButtonStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FButtonStyle>(TEXT("PauseMenuButtonStyle"));
+	SoundStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FMenuSoundStyle>(TEXT("MenuSoundStyle"));
 	UTexture2D* BackgroundImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/GameImage"), nullptr, LOAD_None, nullptr);
 	UTexture2D* BorderImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/Enemy/Smoke/smokeGrey0"), nullptr, LOAD_None, nullptr);
 	UTexture2D* BackButtonImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/map/Texture/towerDefense_tile015"), nullptr, LOAD_None, nullptr);
@@ -41,15 +47,6 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		});
 
 	MenuPadding.Bind(MenuPaddingGetter);
-
-	/*TAttribute<float>::FGetter BlurGetter;
-	TAttribute<float> BlurStrength;
-	BlurGetter.BindLambda([&]() {
-		const float CurLerp = BlurAnim.GetLerp();
-		return 3.f*CurLerp;
-		});
-
-	BlurStrength.Bind(BlurGetter);*/
 
 	RankAnims.SetNum(11);
 	ChildSlot
@@ -113,7 +110,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 						.HAlign(EHorizontalAlignment::HAlign_Center)
 						.VAlign(EVerticalAlignment::VAlign_Center)
 						.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
-						.OnPressed(InArgs._OnStart)
+						.OnPressed(this, &SMainMenuWidget::LaunchGame)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("开始游戏"))))
@@ -159,7 +156,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 						.HAlign(EHorizontalAlignment::HAlign_Center)
 						.VAlign(EVerticalAlignment::VAlign_Center)
 						.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
-						.OnPressed(InArgs._OnQuit)
+						.OnPressed(this, &SMainMenuWidget::QuitGame)
 						[
 							SNew(STextBlock)
 							.Text(FText::FromString(FString(TEXT("退出游戏"))))
@@ -318,6 +315,8 @@ void SMainMenuWidget::ShowRank()
 {
 	if (RankSequence.IsAtStart())
 		RankSequence.Play(this->AsShared());
+
+	FSlateApplication::Get().PlaySound(SoundStyle->RankSound);
 }
 
 void SMainMenuWidget::BackToMenu()
@@ -327,7 +326,25 @@ void SMainMenuWidget::BackToMenu()
 		RankSequence.Reverse();
 		BackButton->SetVisibility(EVisibility::Hidden);
 		BackButton->SetEnabled(false);
+		FSlateApplication::Get().PlaySound(SoundStyle->ButtonSound);
 	}
 }
+
+void SMainMenuWidget::LaunchGame()
+{
+	if(Owner.IsValid())
+	{
+		HAIAIMIHelper::PlaySoundAndCall(Owner->GetWorld(), SoundStyle->ButtonSound, Owner.Get(), &ATDMenuHUD::LaunchGame);
+	}
+}
+
+void SMainMenuWidget::QuitGame()
+{
+	if(Owner.IsValid())
+	{
+		HAIAIMIHelper::PlaySoundAndCall(Owner->GetWorld(), SoundStyle->ButtonSound, Owner.Get(), &ATDMenuHUD::QuitGame);
+	}
+}
+
 
 END_SLATE_FUNCTION_BUILD_OPTIMIZATION

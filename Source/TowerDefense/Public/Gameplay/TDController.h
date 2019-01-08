@@ -32,8 +32,6 @@ private:
 
 	TSharedPtr<class SPauseMenuWidget> PauseWidget;
 
-	FTimerHandle InitPawnTimer;
-
 public:
 	ATDController();
 

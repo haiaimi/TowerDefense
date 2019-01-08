@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include <TimerManager.h>
+#include <Engine/World.h>
+#include <SlateSound.h>
 
 /**
  * 
@@ -19,6 +22,19 @@ public:
 	static float AdaptAngle(const float InAngle);
 
 	static FVector2D ConvertToNormalCoord(FVector2D Pos);
+
+	/**用于切换关卡是播放音乐*/
+	template< class UserClass >	
+	FORCEINLINE static FTimerHandle PlaySoundAndCall(UWorld* World, const FSlateSound& Sound, UserClass* inObj, typename TBaseDelegate<void>::TUObjectMethodDelegate< UserClass >::FMethodPtr inMethod)
+	{
+		FSlateApplication::Get().PlaySound(Sound);
+
+		FTimerHandle Result;
+		const float SoundDuration = FMath::Max(FSlateApplication::Get().GetSoundDuration(Sound), 0.1f);
+		World->GetTimerManager().SetTimer(Result, FTimerDelegate::CreateUObject(inObj, inMethod), SoundDuration, false);
+
+		return Result;
+	}
 
 	static void SaveScore(uint32 newScore);
 

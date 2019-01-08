@@ -13,6 +13,8 @@
 #include <Components/SceneComponent.h>
 #include <PaperFlipbookComponent.h>
 #include "ExplosionEffect.h"
+#include <Kismet/GameplayStatics.h>
+#include <Sound/SoundCue.h>
 
 
 ATDTowerMissle::ATDTowerMissle() :
@@ -92,6 +94,7 @@ void ATDTowerMissle::Fire()
 
 	AMissle* LaunchMissle = Missles.Pop();
 	LaunchMissle->Launch(FRotationMatrix(LaunchMissle->GetActorRotation()).GetUnitAxis(EAxis::Z)*500.f);
+	UGameplayStatics::PlaySoundAtLocation(this, FireSound, LaunchMissle->GetActorLocation());
 	FireInterval = 1.f;
 
 	if (Missles.Num() == 0)
