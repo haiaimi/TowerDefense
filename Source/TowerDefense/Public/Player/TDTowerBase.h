@@ -71,4 +71,7 @@ public:
 	virtual void OnInjured();
 
 	virtual void HealSelf();
+
+	/**支付维修费用*/
+	void PayForRepair();
 };

@@ -127,4 +127,3 @@ void ATDEnemy::NotifyActorEndOverlap(AActor* OtherActor)
 		Super::NotifyActorEndOverlap(OtherActor);
 	}
 }
-

@@ -1,14 +1,14 @@
 [
-    { "EnemyType":2, "NextTime" :1.2 },
+    { "EnemyType":5, "NextTime" :3.1 },
     { "EnemyType":1, "NextTime" :3.2 },
-    { "EnemyType":0, "NextTime" :2.2 },
+    { "EnemyType":2, "NextTime" :2.2 },
     { "EnemyType":3, "NextTime" :2 },
     { "EnemyType":4, "NextTime" :3.2 },
     { "EnemyType":1, "NextTime" :2.2 },
-    { "EnemyType":1, "NextTime" :5.2 },
+    { "EnemyType":5, "NextTime" :5.2 },
     { "EnemyType":2, "NextTime" :3.2 },
-    { "EnemyType":0, "NextTime" :2.2 },
+    { "EnemyType":5, "NextTime" :2.2 },
     { "EnemyType":3, "NextTime" :2 },
     { "EnemyType":4, "NextTime" :3.2 },
-    { "EnemyType":1, "NextTime" :2.2 }
+    { "EnemyType":0, "NextTime" :2.2 }
 ]

@@ -64,7 +64,10 @@ FReply SRepairWidget::OnButtonClicked()
 		SetupAnimation(); //开始修理的动画
 	}
 	if (TowerBase)
+	{
+		TowerBase->PayForRepair();
 		TowerBase->HealSelf();
+	}
 	bInRepair = true;
 	RepairButton->SetEnabled(false);
 	

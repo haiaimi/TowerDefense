@@ -162,3 +162,12 @@ void ATDTowerBase::HealSelf()
 	}
 }
 
+void ATDTowerBase::PayForRepair()
+{
+	if(GetWorld())
+	{
+		if (ATDController* MC = Cast<ATDController>(GetWorld()->GetFirstPlayerController()))
+			MC->AddMoney(-50);
+	}
+}
+
