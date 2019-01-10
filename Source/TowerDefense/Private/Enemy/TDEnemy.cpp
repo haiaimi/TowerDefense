@@ -30,12 +30,11 @@ ATDEnemy::ATDEnemy() :
 	EnemySprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("EnemySprite"));
 	EnemyCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("EnemyCollision"));
 	RootComponent = EnemySprite;
-	EnemySprite->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	EnemySprite->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	EnemySprite->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	EnemySprite->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	EnemyCollision->SetupAttachment(EnemySprite);
 	EnemyCollision->SetCollisionObjectType(COLLISION_ENEMY);
 	EnemyCollision->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	//EnemyCollision->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	EnemyCollision->SetCollisionResponseToChannel(COLLISION_MISSLE, ECollisionResponse::ECR_Block);
 	EnemyCollision->SetCollisionResponseToChannel(COLLISION_DETECTBOX, ECollisionResponse::ECR_Overlap);
 	EnemySprite->TranslucencySortPriority = 1;
@@ -86,7 +85,7 @@ float ATDEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 {
 	Health -= DamageAmount;
 
-	if (Health < 0)
+	if (Health <= 0)
 	{
 		FTransform TraceTransform = GetActorTransform();
 		TraceTransform.SetScale3D(TraceScale);
@@ -111,8 +110,9 @@ void ATDEnemy::NotifyActorBeginOverlap(AActor* OtherActor)
 		const FVector Dir = (Enemy->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 		const FVector LDir = (FRotationMatrix(GetActorRotation()).GetUnitAxis(EAxis::Z));
 		if (FVector::DotProduct(Dir, LDir) > 0.f)
+			OffsetChanged = -20.f;
+		else 
 			OffsetChanged = 20.f;
-		else OffsetChanged = -20.f;
 	}
 
 	Super::NotifyActorBeginOverlap(OtherActor);

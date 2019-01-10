@@ -15,7 +15,8 @@
 
 ATDEnemy_Tank::ATDEnemy_Tank() :
 	TowerIndex(0),
-	TankPitch(0.f)
+	TankPitch(0.f),
+	BulletDamage(100.f)
 {
 	TankBarrel = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TankBarrel"));
 	TankFire = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("TankFire"));
@@ -69,6 +70,7 @@ void ATDEnemy_Tank::Fire()
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 		SpawnedProjectile->Launch(TankBarrel->GetComponentRotation().Vector()*300.f);
+		SpawnedProjectile->Damage = BulletDamage;
 		UGameplayStatics::FinishSpawningActor(SpawnedProjectile, FTransform(FRotator::ZeroRotator, SpawnTransform.GetLocation()));
 	}
 

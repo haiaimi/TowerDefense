@@ -29,6 +29,10 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	class USoundCue* FireSound;
 
+	/**炮弹的伤害*/
+	UPROPERTY(EditDefaultsOnly)
+	float BulletDamage;
+
 	/**火焰持续时间*/
 	FTimerHandle FireTime;
 

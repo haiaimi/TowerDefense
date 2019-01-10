@@ -18,7 +18,6 @@ public:
 	float Speed;
 
 	/**敌人在当前路线中前进得距离*/
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float Distance;
 
 	/**敌人Sprites*/
