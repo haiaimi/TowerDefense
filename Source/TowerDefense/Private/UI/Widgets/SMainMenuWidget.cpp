@@ -29,6 +29,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	FSlateBrush* BackgroundBrush = new FSlateBrush;
 	FSlateBrush* BorderBrush = new FSlateBrush;
 	FSlateBrush* BackButtonBrush = new FSlateBrush;
+	FSlateBrush* BackgroundBrush_Android = new FSlateBrush;
 	BackgroundBrush->SetResourceObject(BackgroundImage);
 	BorderBrush->SetResourceObject(BorderImage);
 	BackButtonBrush->SetResourceObject(BackButtonImage);
@@ -36,6 +37,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	BorderBrush->Margin = FMargin(0.25);
 	BackButtonBrush->DrawAs = ESlateBrushDrawType::Box;
 	BackButtonBrush->Margin = FMargin(0.25);
+	BackgroundBrush_Android->TintColor = FSlateColor(FLinearColor(0.f, 0.f, 0.f, 0.5f));
 
 	const TArray<uint32> CurScores = HAIAIMIHelper::LoadScores();
 
@@ -47,6 +49,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 		});
 
 	MenuPadding.Bind(MenuPaddingGetter);
+
 
 	RankAnims.SetNum(11);
 	ChildSlot
@@ -64,11 +67,21 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 				.Image(BackgroundBrush)
 			]
 		]
-		+SOverlay::Slot()
+#if PLATFORM_ANDROID
+		+ SOverlay::Slot()
+		[
+			SNew(SImage)
+			.Image(BackgroundBrush_Android)    //由于安卓不支持高斯模糊
+		]
+#endif
+#if PLATFORM_WINDOWS
+		+ SOverlay::Slot()
 		[
 			SNew(SBackgroundBlur)
 			.BlurStrength(5.f)
 		]
+#endif
+		
 		+SOverlay::Slot()
 		.HAlign(EHorizontalAlignment::HAlign_Left)
 		.VAlign(EVerticalAlignment::VAlign_Top)

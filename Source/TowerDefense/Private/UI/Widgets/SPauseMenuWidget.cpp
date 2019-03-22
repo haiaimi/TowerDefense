@@ -17,9 +17,11 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 	OwnerController = InArgs._OwnerController;
 	UTexture2D* ButtonImage = LoadObject<UTexture2D>(nullptr, TEXT("/Game/map/Texture/towerDefense_tile015"), nullptr, LOAD_None, nullptr);
 	FSlateBrush* ButtonBrush = new FSlateBrush;
+	FSlateBrush* BackgroundBrush_Android = new FSlateBrush;
 	ButtonBrush->SetResourceObject(ButtonImage);
 	ButtonBrush->DrawAs = ESlateBrushDrawType::Box;
 	ButtonBrush->Margin = FMargin(0.25);
+	BackgroundBrush_Android->TintColor = FSlateColor(FLinearColor(0.f, 0.f, 0.f, 0.5f));
 
 	ButtonStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FButtonStyle>(TEXT("PauseMenuButtonStyle"));
 	FSimpleDelegate RestartDelegate;
@@ -28,11 +30,20 @@ void SPauseMenuWidget::Construct(const FArguments& InArgs)
 	ChildSlot
 	[
 		SNew(SOverlay)
-		+SOverlay::Slot()
+#if PLATFORM_ANDROID
+		+ SOverlay::Slot()
+		[
+			SNew(SImage)
+			.Image(BackgroundBrush_Android)    //由于安卓不支持高斯模糊
+		]
+#endif
+#if PLATFORM_WINDOWS
+		+ SOverlay::Slot()
 		[
 			SNew(SBackgroundBlur)
-			.BlurStrength(5)
+			.BlurStrength(5.f)
 		]
+#endif
 		+SOverlay::Slot()
 		.HAlign(EHorizontalAlignment::HAlign_Center)
 		.VAlign(EVerticalAlignment::VAlign_Center)

@@ -16,7 +16,6 @@ class TOWERDEFENSE_API ATowerBullet : public ATDProjectile
 
 public:
 	ATowerBullet();
-	
-	UFUNCTION()
+
 	virtual void OnImpact(const FHitResult& result)override;
 };

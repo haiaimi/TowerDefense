@@ -148,10 +148,10 @@ void ATDTowerBase::HealSelf()
 	{
 		Health = MaxHealth;
 		GetWorld()->GetTimerManager().ClearTimer(InjuredTimer);
-		GetWorld()->GetTimerManager().ValidateHandle(InjuredTimer);
+		InjuredTimer = FTimerHandle();
 
 		GetWorld()->GetTimerManager().ClearTimer(HealTimer);
-		GetWorld()->GetTimerManager().ValidateHandle(HealTimer);
+		HealTimer = FTimerHandle();
 
 		if (RepairWidget.IsValid() && HUDRef)
 		{

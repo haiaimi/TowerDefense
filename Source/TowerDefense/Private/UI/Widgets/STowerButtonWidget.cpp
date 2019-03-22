@@ -16,65 +16,59 @@ void STowerButtonWidget::Construct(const FArguments& InArgs)
 
 	ChildSlot
 	[
-		SNew(SOverlay)
-		+ SOverlay::Slot()
-		.VAlign(EVerticalAlignment::VAlign_Top)
-		.HAlign(EHorizontalAlignment::HAlign_Left)
-		[
-			SNew(SBox)
-			.HAlign(EHorizontalAlignment::HAlign_Fill)
-			.VAlign(EVerticalAlignment::VAlign_Fill)
-			.WidthOverride(150)
-			.HeightOverride(180)
+		SNew(SBox)
+		.HAlign(EHorizontalAlignment::HAlign_Fill)
+		.VAlign(EVerticalAlignment::VAlign_Fill)
+		.WidthOverride(150)
+		.HeightOverride(180)
 			
+		[
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot()
+			.VAlign(EVerticalAlignment::VAlign_Fill)
+			.HAlign(EHorizontalAlignment::HAlign_Fill)
+			.FillHeight(5.f)
 			[
-				SNew(SVerticalBox)
-				+ SVerticalBox::Slot()
+				SNew(SBorder)
 				.VAlign(EVerticalAlignment::VAlign_Fill)
 				.HAlign(EHorizontalAlignment::HAlign_Fill)
-				.FillHeight(5.f)
+				.RenderTransformPivot(FVector2D(0.5f, 0.5f))
+				.RenderTransform(InArgs._ButtonScale)
+				.BorderImage(InArgs._BorderImage)
 				[
-					SNew(SBorder)
+					SNew(SButton)
 					.VAlign(EVerticalAlignment::VAlign_Fill)
 					.HAlign(EHorizontalAlignment::HAlign_Fill)
-					.RenderTransformPivot(FVector2D(0.5f, 0.5f))
-					.RenderTransform(InArgs._ButtonScale)
-					.BorderImage(InArgs._BorderImage)
-					[
-						SNew(SButton)
-						.VAlign(EVerticalAlignment::VAlign_Fill)
-						.HAlign(EHorizontalAlignment::HAlign_Fill)
-						.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f, 1.f, 1.f, 0.f)))
-						.OnClicked(InArgs._OnClicked)
-						[
-							SNew(SImage)
-							.RenderTransformPivot(FVector2D(0.5f, 0.5f))
-							.RenderTransform(FSlateRenderTransform(0.8f))
-							.Image(InArgs._TowerImage)
-						]
-					]
-				]
-				+ SVerticalBox::Slot()
-				.VAlign(EVerticalAlignment::VAlign_Fill)
-				.HAlign(EHorizontalAlignment::HAlign_Fill)
-				[
-					SAssignNew(TowerCostNumbers, SHorizontalBox)
-					+ SHorizontalBox::Slot()
-					.VAlign(EVerticalAlignment::VAlign_Fill)
-					.HAlign(EHorizontalAlignment::HAlign_Fill)
-					[
-						SNew(SBorder)
-						.RenderOpacity(0.f)
-					]
-					+ SHorizontalBox::Slot()
-					.VAlign(EVerticalAlignment::VAlign_Fill)
-					.HAlign(EHorizontalAlignment::HAlign_Fill)
+					.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f, 1.f, 1.f, 0.f)))
+					.OnClicked(InArgs._OnClicked)
 					[
 						SNew(SImage)
-						.Image(&NumberStyle->MoneyCoin)
 						.RenderTransformPivot(FVector2D(0.5f, 0.5f))
-						.RenderTransform(FSlateRenderTransform(1.5f))
+						.RenderTransform(FSlateRenderTransform(0.8f))
+						.Image(InArgs._TowerImage)
 					]
+				]
+			]
+			+ SVerticalBox::Slot()
+			.VAlign(EVerticalAlignment::VAlign_Fill)
+			.HAlign(EHorizontalAlignment::HAlign_Fill)
+			[
+				SAssignNew(TowerCostNumbers, SHorizontalBox)
+				+ SHorizontalBox::Slot()
+				.VAlign(EVerticalAlignment::VAlign_Fill)
+				.HAlign(EHorizontalAlignment::HAlign_Fill)
+				[
+					SNew(SBorder)
+					.RenderOpacity(0.f)
+				]
+				+ SHorizontalBox::Slot()
+				.VAlign(EVerticalAlignment::VAlign_Fill)
+				.HAlign(EHorizontalAlignment::HAlign_Fill)
+				[
+					SNew(SImage)
+					.Image(&NumberStyle->MoneyCoin)
+					.RenderTransformPivot(FVector2D(0.5f, 0.5f))
+					.RenderTransform(FSlateRenderTransform(1.5f))
 				]
 			]
 		]

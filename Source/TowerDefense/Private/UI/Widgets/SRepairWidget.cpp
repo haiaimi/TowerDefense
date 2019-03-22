@@ -14,31 +14,25 @@ void SRepairWidget::Construct(const FArguments& InArgs)
 	RepairStyle = &FTowerDefenseStyle::Get().GetWidgetStyle<FRepairStyle>(TEXT("RepairStyle"));
 	
 	ChildSlot
+	.Padding(FMargin(InArgs._SpawnPos.X,InArgs._SpawnPos.Y,0.f,0.f))
 	[
-		SNew(SOverlay)
-		+SOverlay::Slot()
-		.HAlign(EHorizontalAlignment::HAlign_Left)
+		SNew(SBox)
+		.HAlign(EHorizontalAlignment::HAlign_Fill)
 		.VAlign(EVerticalAlignment::VAlign_Top)
-		.Padding(FMargin(InArgs._SpawnPos.X,InArgs._SpawnPos.Y,0.f,0.f))
+		.HeightOverride(100)
+		.WidthOverride(100)
 		[
-			SNew(SBox)
+			SAssignNew(RepairButton, SButton)
 			.HAlign(EHorizontalAlignment::HAlign_Fill)
-			.VAlign(EVerticalAlignment::VAlign_Top)
-			.HeightOverride(100)
-			.WidthOverride(100)
+			.VAlign(EVerticalAlignment::VAlign_Fill)
+			.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
+			.OnClicked(this, &SRepairWidget::OnButtonClicked)
+			.RenderTransformPivot(FVector2D(0.25f,0.75f))
 			[
-				SAssignNew(RepairButton, SButton)
-				.HAlign(EHorizontalAlignment::HAlign_Fill)
-				.VAlign(EVerticalAlignment::VAlign_Fill)
-				.ButtonColorAndOpacity(FSlateColor(FLinearColor(1.f,1.f,1.f,0.f)))
-				.OnClicked(this, &SRepairWidget::OnButtonClicked)
-				.RenderTransformPivot(FVector2D(0.25f,0.75f))
-				[
-					SAssignNew(RepairImage, SImage)
-					.Image(&RepairStyle->RepairIcon)
-					.RenderTransformPivot(FVector2D(0.5f,0.5f))
-					.RenderTransform(FSlateRenderTransform(FQuat2D(-0.5f*PI)))
-				]
+				SAssignNew(RepairImage, SImage)
+				.Image(&RepairStyle->RepairIcon)
+				.RenderTransformPivot(FVector2D(0.5f,0.5f))
+				.RenderTransform(FSlateRenderTransform(FQuat2D(-0.5f*PI)))
 			]
 		]
 	];
